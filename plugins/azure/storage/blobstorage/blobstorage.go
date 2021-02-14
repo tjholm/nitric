@@ -54,7 +54,7 @@ func (s *BlobStorageService) Delete(bucket string, key string) error {
 	containerURL := s.client.NewContainerURL(bucket)
 	blobURL := containerURL.NewBlockBlobURL(key)
 
-	_, err := blobURL.Delete(ctx, azblob.DeleteSnapshotsOptionType(""), azblob.BlobAccessConditions{})
+	_, err := blobURL.Delete(ctx, azblob.DeleteSnapshotsOptionInclude, azblob.BlobAccessConditions{})
 
 	return err
 }
@@ -62,6 +62,7 @@ func (s *BlobStorageService) Delete(bucket string, key string) error {
 // New creates a new default S3 storage plugin
 func New() (sdk.StorageService, error) {
 	// TODO: Create a default storage account for the stack???
+	// Need to determine best way to include these ENV variables
 	storageAccount := utils.GetEnv("AZURE_STORAGE_ACCOUNT", "")
 	storageKey := utils.GetEnv("AZURE_STORAGE_ACCESS_KEY", "")
 
