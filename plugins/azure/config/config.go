@@ -16,7 +16,7 @@ func (c *AzureConfig) SubscriptionID() string {
 
 func FromEnv() *AzureConfig {
 	if config == nil {
-		subscriptionID := utils.GetEnv("AZURE_SUBSCRIPTION_ID")
+		subscriptionID := utils.GetEnv("AZURE_SUBSCRIPTION_ID", "")
 
 		config = &AzureConfig{
 			subscriptionID: subscriptionID,

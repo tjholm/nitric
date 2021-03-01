@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	http_service "github.com/nitric-dev/membrane/plugins/aws/gateway/http"
+	eventgrid_service "github.com/nitric-dev/membrane/plugins/azure/eventing/eventgrid"
 	"github.com/nitric-dev/membrane/plugins/sdk"
 
 	"github.com/nitric-dev/membrane/membrane"
@@ -25,7 +26,7 @@ func main() {
 
 	authPlugin := &sdk.UnimplementedAuthPlugin{}
 	documentsPlugin := &sdk.UnimplementedDocumentsPlugin{}
-	eventingPlugin := &sdk.UnimplementedEventingPlugin{}
+	eventingPlugin, _ := eventgrid_service.New()
 	gatewayPlugin, _ := http_service.New()
 	storagePlugin := &sdk.UnimplementedStoragePlugin{}
 	queuePlugin := &sdk.UnimplementedQueuePlugin{}
