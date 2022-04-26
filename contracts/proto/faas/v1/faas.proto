@@ -60,7 +60,15 @@ message SubscriptionWorker {
 }
 
 message BucketWorker {
+  enum BucketOp {
+    WRITE = 0;
+    DELETE = 1;
+  }
+
   string bucket = 1;
+  BucketOp op = 2;
+  // A key pattern to match on (if none is specific assume all '*')
+  string pattern = 3;
 }
 
 message ScheduleWorker {
