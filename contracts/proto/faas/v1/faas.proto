@@ -59,6 +59,10 @@ message SubscriptionWorker {
   string topic = 1;
 }
 
+message BucketWorker {
+  string bucket = 1;
+}
+
 message ScheduleWorker {
   string key = 1;
   oneof cadence {
@@ -89,6 +93,7 @@ message InitRequest {
     ApiWorker api = 10;
     SubscriptionWorker subscription = 11;
     ScheduleWorker schedule = 12;
+    BucketWorker bucket = 13;
   }
 }
 
@@ -109,6 +114,7 @@ message TriggerRequest {
   oneof context {
     HttpTriggerContext http = 3;
     TopicTriggerContext topic = 4;
+    BucketTriggerContext bucket = 5;
   }
 }
 
@@ -153,6 +159,10 @@ message TopicTriggerContext {
   // TODO: Add the event ID to the trigger context here got transactional outbox?
 }
 
+message BucketTriggerContext {
+  string bucket = 1;
+}
+
 // The worker has successfully processed a trigger
 message TriggerResponse {
   // The data returned in the response
@@ -166,6 +176,8 @@ message TriggerResponse {
     HttpResponseContext http = 10;
     // response to a topic trigger
     TopicResponseContext topic = 11;
+    // response to a bucket trigger
+    BucketResponseContext bucket = 12;
   }
 }
 
@@ -192,3 +204,8 @@ message TopicResponseContext {
   // Success status of the handled event
   bool success = 1;
 }
+
+// Specific event response message
+// We do not accept responses for events
+// only whether or not they were successfully processed
+message BucketResponseContext {}
