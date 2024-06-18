@@ -22,13 +22,14 @@ import (
 	"io/fs"
 
 	"github.com/aws/jsii-runtime-go"
+	// azureprovider "github.com/cdktf/cdktf-provider-azurerm-go/azurerm/v12/provider"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 	"github.com/nitrictech/nitric/cloud/azure/common"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles"
+	azstack "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack"
 	"github.com/nitrictech/nitric/cloud/common/deploy"
 	"github.com/nitrictech/nitric/cloud/common/deploy/provider"
-	"github.com/nitrictech/nitric/cloud/common/deploy/pulumix"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
-	resourcespb "github.com/nitrictech/nitric/core/pkg/proto/resources/v1"
 	apimanagement "github.com/pulumi/pulumi-azure-native-sdk/apimanagement"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"google.golang.org/grpc/codes"
@@ -45,8 +46,11 @@ type NitricAzureTerraformProvider struct {
 
 	AzureConfig *common.AzureConfig
 
-	StackId   string
-	resources []*pulumix.NitricPulumiResource[any]
+	StackId string
+
+	Stack azstack.Stack
+
+	Roles roles.Roles
 
 	provider.NitricDefaultOrder
 }
@@ -93,66 +97,21 @@ func (a *NitricAzureTerraformProvider) Init(attributes map[string]interface{}) e
 	return nil
 }
 
-// func createKeyVault(ctx *pulumi.Context, group *resources.ResourceGroup, tenantId string, tags map[string]string) (*keyvault.Vault, error) {
-// 	// Create a stack level keyvault if secrets are enabled
-// 	// At the moment secrets have no config level setting
-// 	vaultName := ResourceName(ctx, "", KeyVaultRT)
-
-// 	keyVault, err := keyvault.NewVault(ctx, vaultName, &keyvault.VaultArgs{
-// 		Location:          group.Location,
-// 		ResourceGroupName: group.Name,
-// 		Properties: &keyvault.VaultPropertiesArgs{
-// 			EnableSoftDelete:        pulumi.Bool(false),
-// 			EnableRbacAuthorization: pulumi.Bool(true),
-// 			Sku: &keyvault.SkuArgs{
-// 				Family: pulumi.String("A"),
-// 				Name:   keyvault.SkuNameStandard,
-// 			},
-// 			TenantId: pulumi.String(tenantId),
-// 		},
-// 		Tags: pulumi.ToStringMap(tags),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return keyVault, nil
-// }
-
-// func createStorageAccount(ctx *pulumi.Context, group *resources.ResourceGroup, tags map[string]string) (*storage.StorageAccount, error) {
-// 	accName := ResourceName(ctx, "", StorageAccountRT)
-// 	storageAccount, err := storage.NewStorageAccount(ctx, accName, &storage.StorageAccountArgs{
-// 		AccessTier:        storage.AccessTierHot,
-// 		ResourceGroupName: group.Name,
-// 		Kind:              pulumi.String("StorageV2"),
-// 		Sku: storage.SkuArgs{
-// 			Name: pulumi.String(storage.SkuName_Standard_LRS),
-// 		},
-// 		Tags: pulumi.ToStringMap(tags),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return storageAccount, nil
-// }
-
-func hasResourceType(resources []*pulumix.NitricPulumiResource[any], resourceType resourcespb.ResourceType) bool {
-	for _, r := range resources {
-		if r.Id.GetType() == resourceType {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (a *NitricAzureTerraformProvider) Pre(stack cdktf.TerraformStack, resources []*deploymentspb.Resource) error {
 	tfRegion := cdktf.NewTerraformVariable(stack, jsii.String("region"), &cdktf.TerraformVariableConfig{
 		Type:        jsii.String("string"),
 		Default:     jsii.String(a.Region),
 		Description: jsii.String("The AWS region to deploy resources to"),
 	})
+
+	// Deploy the stack and necessary resources
+	a.Stack = azstack.NewStack(stack, jsii.String("nitric-azure-stack"), &azstack.StackConfig{
+		Region:    tfRegion.StringValue(),
+		StackName: jsii.String(a.StackName),
+	})
+
+	// Create the roles module
+	a.Roles = roles.NewRoles(stack, jsii.String("nitric-azure-roles"), &roles.RolesConfig{})
 
 	return nil
 }

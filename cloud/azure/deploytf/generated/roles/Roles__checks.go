@@ -1,6 +1,6 @@
 //go:build !no_runtime_type_checking
 
-package stack
+package roles
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
 
-func (s *jsiiProxy_Stack) validateAddOverrideParameters(path *string, value interface{}) error {
+func (r *jsiiProxy_Roles) validateAddOverrideParameters(path *string, value interface{}) error {
 	if path == nil {
 		return fmt.Errorf("parameter path is required, but nil was provided")
 	}
@@ -23,7 +23,7 @@ func (s *jsiiProxy_Stack) validateAddOverrideParameters(path *string, value inte
 	return nil
 }
 
-func (s *jsiiProxy_Stack) validateAddProviderParameters(provider interface{}) error {
+func (r *jsiiProxy_Roles) validateAddProviderParameters(provider interface{}) error {
 	if provider == nil {
 		return fmt.Errorf("parameter provider is required, but nil was provided")
 	}
@@ -50,7 +50,7 @@ func (s *jsiiProxy_Stack) validateAddProviderParameters(provider interface{}) er
 	return nil
 }
 
-func (s *jsiiProxy_Stack) validateGetStringParameters(output *string) error {
+func (r *jsiiProxy_Roles) validateGetStringParameters(output *string) error {
 	if output == nil {
 		return fmt.Errorf("parameter output is required, but nil was provided")
 	}
@@ -58,7 +58,7 @@ func (s *jsiiProxy_Stack) validateGetStringParameters(output *string) error {
 	return nil
 }
 
-func (s *jsiiProxy_Stack) validateInterpolationForOutputParameters(moduleOutput *string) error {
+func (r *jsiiProxy_Roles) validateInterpolationForOutputParameters(moduleOutput *string) error {
 	if moduleOutput == nil {
 		return fmt.Errorf("parameter moduleOutput is required, but nil was provided")
 	}
@@ -66,7 +66,7 @@ func (s *jsiiProxy_Stack) validateInterpolationForOutputParameters(moduleOutput 
 	return nil
 }
 
-func (s *jsiiProxy_Stack) validateOverrideLogicalIdParameters(newLogicalId *string) error {
+func (r *jsiiProxy_Roles) validateOverrideLogicalIdParameters(newLogicalId *string) error {
 	if newLogicalId == nil {
 		return fmt.Errorf("parameter newLogicalId is required, but nil was provided")
 	}
@@ -74,7 +74,7 @@ func (s *jsiiProxy_Stack) validateOverrideLogicalIdParameters(newLogicalId *stri
 	return nil
 }
 
-func validateStack_IsConstructParameters(x interface{}) error {
+func validateRoles_IsConstructParameters(x interface{}) error {
 	if x == nil {
 		return fmt.Errorf("parameter x is required, but nil was provided")
 	}
@@ -82,7 +82,7 @@ func validateStack_IsConstructParameters(x interface{}) error {
 	return nil
 }
 
-func validateStack_IsTerraformElementParameters(x interface{}) error {
+func validateRoles_IsTerraformElementParameters(x interface{}) error {
 	if x == nil {
 		return fmt.Errorf("parameter x is required, but nil was provided")
 	}
@@ -90,7 +90,7 @@ func validateStack_IsTerraformElementParameters(x interface{}) error {
 	return nil
 }
 
-func (j *jsiiProxy_Stack) validateSetDeployKeyVaultParameters(val *bool) error {
+func (j *jsiiProxy_Roles) validateSetResourceGroupNameParameters(val *string) error {
 	if val == nil {
 		return fmt.Errorf("parameter val is required, but nil was provided")
 	}
@@ -98,7 +98,7 @@ func (j *jsiiProxy_Stack) validateSetDeployKeyVaultParameters(val *bool) error {
 	return nil
 }
 
-func (j *jsiiProxy_Stack) validateSetDeployStorageParameters(val *bool) error {
+func (j *jsiiProxy_Roles) validateSetStackIdParameters(val *string) error {
 	if val == nil {
 		return fmt.Errorf("parameter val is required, but nil was provided")
 	}
@@ -106,7 +106,7 @@ func (j *jsiiProxy_Stack) validateSetDeployStorageParameters(val *bool) error {
 	return nil
 }
 
-func (j *jsiiProxy_Stack) validateSetRegionParameters(val *string) error {
+func (j *jsiiProxy_Roles) validateSetSubscriptionIdParameters(val *string) error {
 	if val == nil {
 		return fmt.Errorf("parameter val is required, but nil was provided")
 	}
@@ -114,15 +114,7 @@ func (j *jsiiProxy_Stack) validateSetRegionParameters(val *string) error {
 	return nil
 }
 
-func (j *jsiiProxy_Stack) validateSetStackNameParameters(val *string) error {
-	if val == nil {
-		return fmt.Errorf("parameter val is required, but nil was provided")
-	}
-
-	return nil
-}
-
-func validateNewStackParameters(scope constructs.Construct, id *string, config *StackConfig) error {
+func validateNewRolesParameters(scope constructs.Construct, id *string, config *RolesConfig) error {
 	if scope == nil {
 		return fmt.Errorf("parameter scope is required, but nil was provided")
 	}

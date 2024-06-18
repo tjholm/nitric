@@ -49,6 +49,10 @@
     {
       "name": "http_proxy",
       "source": "./.nitric/modules/http_proxy"
+    },
+    {
+      "name": "roles",
+      "source": "./.nitric/modules/roles"
     }
   ],
   "context": {}

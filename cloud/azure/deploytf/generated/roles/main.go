@@ -1,5 +1,5 @@
-// stack
-package stack
+// roles
+package roles
 
 import (
 	"reflect"
@@ -9,34 +9,29 @@ import (
 
 func init() {
 	_jsii_.RegisterClass(
-		"stack.Stack",
-		reflect.TypeOf((*Stack)(nil)).Elem(),
+		"roles.Roles",
+		reflect.TypeOf((*Roles)(nil)).Elem(),
 		[]_jsii_.Member{
 			_jsii_.MemberMethod{JsiiMethod: "addOverride", GoMethod: "AddOverride"},
 			_jsii_.MemberMethod{JsiiMethod: "addProvider", GoMethod: "AddProvider"},
 			_jsii_.MemberProperty{JsiiProperty: "cdktfStack", GoGetter: "CdktfStack"},
 			_jsii_.MemberProperty{JsiiProperty: "constructNodeMetadata", GoGetter: "ConstructNodeMetadata"},
 			_jsii_.MemberProperty{JsiiProperty: "dependsOn", GoGetter: "DependsOn"},
-			_jsii_.MemberProperty{JsiiProperty: "deployKeyVault", GoGetter: "DeployKeyVault"},
-			_jsii_.MemberProperty{JsiiProperty: "deployStorage", GoGetter: "DeployStorage"},
 			_jsii_.MemberProperty{JsiiProperty: "forEach", GoGetter: "ForEach"},
 			_jsii_.MemberProperty{JsiiProperty: "fqn", GoGetter: "Fqn"},
 			_jsii_.MemberProperty{JsiiProperty: "friendlyUniqueId", GoGetter: "FriendlyUniqueId"},
 			_jsii_.MemberMethod{JsiiMethod: "getString", GoMethod: "GetString"},
 			_jsii_.MemberMethod{JsiiMethod: "interpolationForOutput", GoMethod: "InterpolationForOutput"},
-			_jsii_.MemberProperty{JsiiProperty: "keyVaultNameOutput", GoGetter: "KeyVaultNameOutput"},
 			_jsii_.MemberProperty{JsiiProperty: "node", GoGetter: "Node"},
 			_jsii_.MemberMethod{JsiiMethod: "overrideLogicalId", GoMethod: "OverrideLogicalId"},
 			_jsii_.MemberProperty{JsiiProperty: "providers", GoGetter: "Providers"},
 			_jsii_.MemberProperty{JsiiProperty: "rawOverrides", GoGetter: "RawOverrides"},
-			_jsii_.MemberProperty{JsiiProperty: "region", GoGetter: "Region"},
 			_jsii_.MemberMethod{JsiiMethod: "resetOverrideLogicalId", GoMethod: "ResetOverrideLogicalId"},
-			_jsii_.MemberProperty{JsiiProperty: "resourceGroupNameOutput", GoGetter: "ResourceGroupNameOutput"},
+			_jsii_.MemberProperty{JsiiProperty: "resourceGroupName", GoGetter: "ResourceGroupName"},
 			_jsii_.MemberProperty{JsiiProperty: "skipAssetCreationFromLocalModules", GoGetter: "SkipAssetCreationFromLocalModules"},
 			_jsii_.MemberProperty{JsiiProperty: "source", GoGetter: "Source"},
-			_jsii_.MemberProperty{JsiiProperty: "stackIdOutput", GoGetter: "StackIdOutput"},
-			_jsii_.MemberProperty{JsiiProperty: "stackName", GoGetter: "StackName"},
-			_jsii_.MemberProperty{JsiiProperty: "storageAccountNameOutput", GoGetter: "StorageAccountNameOutput"},
+			_jsii_.MemberProperty{JsiiProperty: "stackId", GoGetter: "StackId"},
+			_jsii_.MemberProperty{JsiiProperty: "subscriptionId", GoGetter: "SubscriptionId"},
 			_jsii_.MemberMethod{JsiiMethod: "synthesizeAttributes", GoMethod: "SynthesizeAttributes"},
 			_jsii_.MemberMethod{JsiiMethod: "synthesizeHclAttributes", GoMethod: "SynthesizeHclAttributes"},
 			_jsii_.MemberMethod{JsiiMethod: "toHclTerraform", GoMethod: "ToHclTerraform"},
@@ -46,13 +41,13 @@ func init() {
 			_jsii_.MemberProperty{JsiiProperty: "version", GoGetter: "Version"},
 		},
 		func() interface{} {
-			j := jsiiProxy_Stack{}
+			j := jsiiProxy_Roles{}
 			_jsii_.InitJsiiProxy(&j.Type__cdktfTerraformModule)
 			return &j
 		},
 	)
 	_jsii_.RegisterStruct(
-		"stack.StackConfig",
-		reflect.TypeOf((*StackConfig)(nil)).Elem(),
+		"roles.RolesConfig",
+		reflect.TypeOf((*RolesConfig)(nil)).Elem(),
 	)
 }

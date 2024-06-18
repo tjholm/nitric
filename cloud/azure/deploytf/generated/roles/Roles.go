@@ -1,18 +1,18 @@
-package stack
+package roles
 
 import (
 	_jsii_ "github.com/aws/jsii-runtime-go/runtime"
-	_init_ "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack/jsii"
+	_init_ "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles/jsii"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
-	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack/internal"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles/internal"
 )
 
-// Defines an Stack based on a Terraform module.
+// Defines an Roles based on a Terraform module.
 //
-// Source at ./.nitric/modules/stack
-type Stack interface {
+// Source at ./.nitric/modules/roles
+type Roles interface {
 	cdktf.TerraformModule
 	// Experimental.
 	CdktfStack() cdktf.TerraformStack
@@ -22,10 +22,6 @@ type Stack interface {
 	DependsOn() *[]*string
 	// Experimental.
 	SetDependsOn(val *[]*string)
-	DeployKeyVault() *bool
-	SetDeployKeyVault(val *bool)
-	DeployStorage() *bool
-	SetDeployStorage(val *bool)
 	// Experimental.
 	ForEach() cdktf.ITerraformIterator
 	// Experimental.
@@ -34,24 +30,22 @@ type Stack interface {
 	Fqn() *string
 	// Experimental.
 	FriendlyUniqueId() *string
-	KeyVaultNameOutput() *string
 	// The tree node.
 	Node() constructs.Node
 	// Experimental.
 	Providers() *[]interface{}
 	// Experimental.
 	RawOverrides() interface{}
-	Region() *string
-	SetRegion(val *string)
-	ResourceGroupNameOutput() *string
+	ResourceGroupName() *string
+	SetResourceGroupName(val *string)
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
 	Source() *string
-	StackIdOutput() *string
-	StackName() *string
-	SetStackName(val *string)
-	StorageAccountNameOutput() *string
+	StackId() *string
+	SetStackId(val *string)
+	SubscriptionId() *string
+	SetSubscriptionId(val *string)
 	// Experimental.
 	Version() *string
 	// Experimental.
@@ -80,12 +74,12 @@ type Stack interface {
 	ToTerraform() interface{}
 }
 
-// The jsii proxy struct for Stack
-type jsiiProxy_Stack struct {
+// The jsii proxy struct for Roles
+type jsiiProxy_Roles struct {
 	internal.Type__cdktfTerraformModule
 }
 
-func (j *jsiiProxy_Stack) CdktfStack() cdktf.TerraformStack {
+func (j *jsiiProxy_Roles) CdktfStack() cdktf.TerraformStack {
 	var returns cdktf.TerraformStack
 	_jsii_.Get(
 		j,
@@ -95,7 +89,7 @@ func (j *jsiiProxy_Stack) CdktfStack() cdktf.TerraformStack {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) ConstructNodeMetadata() *map[string]interface{} {
+func (j *jsiiProxy_Roles) ConstructNodeMetadata() *map[string]interface{} {
 	var returns *map[string]interface{}
 	_jsii_.Get(
 		j,
@@ -105,7 +99,7 @@ func (j *jsiiProxy_Stack) ConstructNodeMetadata() *map[string]interface{} {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) DependsOn() *[]*string {
+func (j *jsiiProxy_Roles) DependsOn() *[]*string {
 	var returns *[]*string
 	_jsii_.Get(
 		j,
@@ -115,27 +109,7 @@ func (j *jsiiProxy_Stack) DependsOn() *[]*string {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) DeployKeyVault() *bool {
-	var returns *bool
-	_jsii_.Get(
-		j,
-		"deployKeyVault",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Stack) DeployStorage() *bool {
-	var returns *bool
-	_jsii_.Get(
-		j,
-		"deployStorage",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Stack) ForEach() cdktf.ITerraformIterator {
+func (j *jsiiProxy_Roles) ForEach() cdktf.ITerraformIterator {
 	var returns cdktf.ITerraformIterator
 	_jsii_.Get(
 		j,
@@ -145,7 +119,7 @@ func (j *jsiiProxy_Stack) ForEach() cdktf.ITerraformIterator {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) Fqn() *string {
+func (j *jsiiProxy_Roles) Fqn() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
@@ -155,7 +129,7 @@ func (j *jsiiProxy_Stack) Fqn() *string {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) FriendlyUniqueId() *string {
+func (j *jsiiProxy_Roles) FriendlyUniqueId() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
@@ -165,17 +139,7 @@ func (j *jsiiProxy_Stack) FriendlyUniqueId() *string {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) KeyVaultNameOutput() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"keyVaultNameOutput",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Stack) Node() constructs.Node {
+func (j *jsiiProxy_Roles) Node() constructs.Node {
 	var returns constructs.Node
 	_jsii_.Get(
 		j,
@@ -185,7 +149,7 @@ func (j *jsiiProxy_Stack) Node() constructs.Node {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) Providers() *[]interface{} {
+func (j *jsiiProxy_Roles) Providers() *[]interface{} {
 	var returns *[]interface{}
 	_jsii_.Get(
 		j,
@@ -195,7 +159,7 @@ func (j *jsiiProxy_Stack) Providers() *[]interface{} {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) RawOverrides() interface{} {
+func (j *jsiiProxy_Roles) RawOverrides() interface{} {
 	var returns interface{}
 	_jsii_.Get(
 		j,
@@ -205,27 +169,17 @@ func (j *jsiiProxy_Stack) RawOverrides() interface{} {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) Region() *string {
+func (j *jsiiProxy_Roles) ResourceGroupName() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
-		"region",
+		"resourceGroupName",
 		&returns,
 	)
 	return returns
 }
 
-func (j *jsiiProxy_Stack) ResourceGroupNameOutput() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"resourceGroupNameOutput",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Stack) SkipAssetCreationFromLocalModules() *bool {
+func (j *jsiiProxy_Roles) SkipAssetCreationFromLocalModules() *bool {
 	var returns *bool
 	_jsii_.Get(
 		j,
@@ -235,7 +189,7 @@ func (j *jsiiProxy_Stack) SkipAssetCreationFromLocalModules() *bool {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) Source() *string {
+func (j *jsiiProxy_Roles) Source() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
@@ -245,37 +199,27 @@ func (j *jsiiProxy_Stack) Source() *string {
 	return returns
 }
 
-func (j *jsiiProxy_Stack) StackIdOutput() *string {
+func (j *jsiiProxy_Roles) StackId() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
-		"stackIdOutput",
+		"stackId",
 		&returns,
 	)
 	return returns
 }
 
-func (j *jsiiProxy_Stack) StackName() *string {
+func (j *jsiiProxy_Roles) SubscriptionId() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
-		"stackName",
+		"subscriptionId",
 		&returns,
 	)
 	return returns
 }
 
-func (j *jsiiProxy_Stack) StorageAccountNameOutput() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"storageAccountNameOutput",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Stack) Version() *string {
+func (j *jsiiProxy_Roles) Version() *string {
 	var returns *string
 	_jsii_.Get(
 		j,
@@ -286,16 +230,16 @@ func (j *jsiiProxy_Stack) Version() *string {
 }
 
 
-func NewStack(scope constructs.Construct, id *string, config *StackConfig) Stack {
+func NewRoles(scope constructs.Construct, id *string, config *RolesConfig) Roles {
 	_init_.Initialize()
 
-	if err := validateNewStackParameters(scope, id, config); err != nil {
+	if err := validateNewRolesParameters(scope, id, config); err != nil {
 		panic(err)
 	}
-	j := jsiiProxy_Stack{}
+	j := jsiiProxy_Roles{}
 
 	_jsii_.Create(
-		"stack.Stack",
+		"roles.Roles",
 		[]interface{}{scope, id, config},
 		&j,
 	)
@@ -303,17 +247,17 @@ func NewStack(scope constructs.Construct, id *string, config *StackConfig) Stack
 	return &j
 }
 
-func NewStack_Override(s Stack, scope constructs.Construct, id *string, config *StackConfig) {
+func NewRoles_Override(r Roles, scope constructs.Construct, id *string, config *RolesConfig) {
 	_init_.Initialize()
 
 	_jsii_.Create(
-		"stack.Stack",
+		"roles.Roles",
 		[]interface{}{scope, id, config},
-		s,
+		r,
 	)
 }
 
-func (j *jsiiProxy_Stack)SetDependsOn(val *[]*string) {
+func (j *jsiiProxy_Roles)SetDependsOn(val *[]*string) {
 	_jsii_.Set(
 		j,
 		"dependsOn",
@@ -321,29 +265,7 @@ func (j *jsiiProxy_Stack)SetDependsOn(val *[]*string) {
 	)
 }
 
-func (j *jsiiProxy_Stack)SetDeployKeyVault(val *bool) {
-	if err := j.validateSetDeployKeyVaultParameters(val); err != nil {
-		panic(err)
-	}
-	_jsii_.Set(
-		j,
-		"deployKeyVault",
-		val,
-	)
-}
-
-func (j *jsiiProxy_Stack)SetDeployStorage(val *bool) {
-	if err := j.validateSetDeployStorageParameters(val); err != nil {
-		panic(err)
-	}
-	_jsii_.Set(
-		j,
-		"deployStorage",
-		val,
-	)
-}
-
-func (j *jsiiProxy_Stack)SetForEach(val cdktf.ITerraformIterator) {
+func (j *jsiiProxy_Roles)SetForEach(val cdktf.ITerraformIterator) {
 	_jsii_.Set(
 		j,
 		"forEach",
@@ -351,24 +273,35 @@ func (j *jsiiProxy_Stack)SetForEach(val cdktf.ITerraformIterator) {
 	)
 }
 
-func (j *jsiiProxy_Stack)SetRegion(val *string) {
-	if err := j.validateSetRegionParameters(val); err != nil {
+func (j *jsiiProxy_Roles)SetResourceGroupName(val *string) {
+	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
 		panic(err)
 	}
 	_jsii_.Set(
 		j,
-		"region",
+		"resourceGroupName",
 		val,
 	)
 }
 
-func (j *jsiiProxy_Stack)SetStackName(val *string) {
-	if err := j.validateSetStackNameParameters(val); err != nil {
+func (j *jsiiProxy_Roles)SetStackId(val *string) {
+	if err := j.validateSetStackIdParameters(val); err != nil {
 		panic(err)
 	}
 	_jsii_.Set(
 		j,
-		"stackName",
+		"stackId",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Roles)SetSubscriptionId(val *string) {
+	if err := j.validateSetSubscriptionIdParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"subscriptionId",
 		val,
 	)
 }
@@ -390,16 +323,16 @@ func (j *jsiiProxy_Stack)SetStackName(val *string) {
 // this type-testing method instead.
 //
 // Returns: true if `x` is an object created from a class which extends `Construct`.
-func Stack_IsConstruct(x interface{}) *bool {
+func Roles_IsConstruct(x interface{}) *bool {
 	_init_.Initialize()
 
-	if err := validateStack_IsConstructParameters(x); err != nil {
+	if err := validateRoles_IsConstructParameters(x); err != nil {
 		panic(err)
 	}
 	var returns *bool
 
 	_jsii_.StaticInvoke(
-		"stack.Stack",
+		"roles.Roles",
 		"isConstruct",
 		[]interface{}{x},
 		&returns,
@@ -409,16 +342,16 @@ func Stack_IsConstruct(x interface{}) *bool {
 }
 
 // Experimental.
-func Stack_IsTerraformElement(x interface{}) *bool {
+func Roles_IsTerraformElement(x interface{}) *bool {
 	_init_.Initialize()
 
-	if err := validateStack_IsTerraformElementParameters(x); err != nil {
+	if err := validateRoles_IsTerraformElementParameters(x); err != nil {
 		panic(err)
 	}
 	var returns *bool
 
 	_jsii_.StaticInvoke(
-		"stack.Stack",
+		"roles.Roles",
 		"isTerraformElement",
 		[]interface{}{x},
 		&returns,
@@ -427,36 +360,36 @@ func Stack_IsTerraformElement(x interface{}) *bool {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) AddOverride(path *string, value interface{}) {
-	if err := s.validateAddOverrideParameters(path, value); err != nil {
+func (r *jsiiProxy_Roles) AddOverride(path *string, value interface{}) {
+	if err := r.validateAddOverrideParameters(path, value); err != nil {
 		panic(err)
 	}
 	_jsii_.InvokeVoid(
-		s,
+		r,
 		"addOverride",
 		[]interface{}{path, value},
 	)
 }
 
-func (s *jsiiProxy_Stack) AddProvider(provider interface{}) {
-	if err := s.validateAddProviderParameters(provider); err != nil {
+func (r *jsiiProxy_Roles) AddProvider(provider interface{}) {
+	if err := r.validateAddProviderParameters(provider); err != nil {
 		panic(err)
 	}
 	_jsii_.InvokeVoid(
-		s,
+		r,
 		"addProvider",
 		[]interface{}{provider},
 	)
 }
 
-func (s *jsiiProxy_Stack) GetString(output *string) *string {
-	if err := s.validateGetStringParameters(output); err != nil {
+func (r *jsiiProxy_Roles) GetString(output *string) *string {
+	if err := r.validateGetStringParameters(output); err != nil {
 		panic(err)
 	}
 	var returns *string
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"getString",
 		[]interface{}{output},
 		&returns,
@@ -465,14 +398,14 @@ func (s *jsiiProxy_Stack) GetString(output *string) *string {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) InterpolationForOutput(moduleOutput *string) cdktf.IResolvable {
-	if err := s.validateInterpolationForOutputParameters(moduleOutput); err != nil {
+func (r *jsiiProxy_Roles) InterpolationForOutput(moduleOutput *string) cdktf.IResolvable {
+	if err := r.validateInterpolationForOutputParameters(moduleOutput); err != nil {
 		panic(err)
 	}
 	var returns cdktf.IResolvable
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"interpolationForOutput",
 		[]interface{}{moduleOutput},
 		&returns,
@@ -481,30 +414,30 @@ func (s *jsiiProxy_Stack) InterpolationForOutput(moduleOutput *string) cdktf.IRe
 	return returns
 }
 
-func (s *jsiiProxy_Stack) OverrideLogicalId(newLogicalId *string) {
-	if err := s.validateOverrideLogicalIdParameters(newLogicalId); err != nil {
+func (r *jsiiProxy_Roles) OverrideLogicalId(newLogicalId *string) {
+	if err := r.validateOverrideLogicalIdParameters(newLogicalId); err != nil {
 		panic(err)
 	}
 	_jsii_.InvokeVoid(
-		s,
+		r,
 		"overrideLogicalId",
 		[]interface{}{newLogicalId},
 	)
 }
 
-func (s *jsiiProxy_Stack) ResetOverrideLogicalId() {
+func (r *jsiiProxy_Roles) ResetOverrideLogicalId() {
 	_jsii_.InvokeVoid(
-		s,
+		r,
 		"resetOverrideLogicalId",
 		nil, // no parameters
 	)
 }
 
-func (s *jsiiProxy_Stack) SynthesizeAttributes() *map[string]interface{} {
+func (r *jsiiProxy_Roles) SynthesizeAttributes() *map[string]interface{} {
 	var returns *map[string]interface{}
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"synthesizeAttributes",
 		nil, // no parameters
 		&returns,
@@ -513,11 +446,11 @@ func (s *jsiiProxy_Stack) SynthesizeAttributes() *map[string]interface{} {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) SynthesizeHclAttributes() *map[string]interface{} {
+func (r *jsiiProxy_Roles) SynthesizeHclAttributes() *map[string]interface{} {
 	var returns *map[string]interface{}
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"synthesizeHclAttributes",
 		nil, // no parameters
 		&returns,
@@ -526,11 +459,11 @@ func (s *jsiiProxy_Stack) SynthesizeHclAttributes() *map[string]interface{} {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) ToHclTerraform() interface{} {
+func (r *jsiiProxy_Roles) ToHclTerraform() interface{} {
 	var returns interface{}
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"toHclTerraform",
 		nil, // no parameters
 		&returns,
@@ -539,11 +472,11 @@ func (s *jsiiProxy_Stack) ToHclTerraform() interface{} {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) ToMetadata() interface{} {
+func (r *jsiiProxy_Roles) ToMetadata() interface{} {
 	var returns interface{}
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"toMetadata",
 		nil, // no parameters
 		&returns,
@@ -552,11 +485,11 @@ func (s *jsiiProxy_Stack) ToMetadata() interface{} {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) ToString() *string {
+func (r *jsiiProxy_Roles) ToString() *string {
 	var returns *string
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"toString",
 		nil, // no parameters
 		&returns,
@@ -565,11 +498,11 @@ func (s *jsiiProxy_Stack) ToString() *string {
 	return returns
 }
 
-func (s *jsiiProxy_Stack) ToTerraform() interface{} {
+func (r *jsiiProxy_Roles) ToTerraform() interface{} {
 	var returns interface{}
 
 	_jsii_.Invoke(
-		s,
+		r,
 		"toTerraform",
 		nil, // no parameters
 		&returns,
