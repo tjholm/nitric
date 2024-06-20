@@ -17,3 +17,8 @@ output "key_vault_name" {
   description = "The name of the Azure key vault"
   value       = azurerm_key_vault.kv[0].name
 }
+
+output "webhook_application_id" {
+  description = "The application id of the AzureAD application for webhook delivery"
+  value       = azuread_application.webhook.application_id
+}

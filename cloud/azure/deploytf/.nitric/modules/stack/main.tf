@@ -57,3 +57,20 @@ resource "azurerm_container_app_environment" "environment" {
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 }
+
+# Get the azure AD client config
+data "azurerm_client_config" "current" {}
+
+# Deploy an AzureAD Application to enable secure webhook delivery
+resource "azuread_application" "webhook" {
+  display_name = "${var.stack_name}-${random_string.id.result}-webhook"
+  owners = [ data.azurerm_client_config.current.object_id ]
+  app_role {
+    allowed_member_types = ["Application"]
+    description          = "Enables webhook subscriptions to authenticate using this application"
+    display_name         = "AzureEventGridSecureWebhookSubscriber"
+    id                   = "4962773b-9cdb-44cf-a8bf-237846a00ab7"
+    value                = "4962773b-9cdb-44cf-a8bf-237846a00ab7"
+  
+  }
+}

@@ -44,6 +44,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "toString", GoMethod: "ToString"},
 			_jsii_.MemberMethod{JsiiMethod: "toTerraform", GoMethod: "ToTerraform"},
 			_jsii_.MemberProperty{JsiiProperty: "version", GoGetter: "Version"},
+			_jsii_.MemberProperty{JsiiProperty: "webhookApplicationIdOutput", GoGetter: "WebhookApplicationIdOutput"},
 		},
 		func() interface{} {
 			j := jsiiProxy_Stack{}

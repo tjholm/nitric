@@ -54,6 +54,7 @@ type Stack interface {
 	StorageAccountNameOutput() *string
 	// Experimental.
 	Version() *string
+	WebhookApplicationIdOutput() *string
 	// Experimental.
 	AddOverride(path *string, value interface{})
 	// Experimental.
@@ -280,6 +281,16 @@ func (j *jsiiProxy_Stack) Version() *string {
 	_jsii_.Get(
 		j,
 		"version",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) WebhookApplicationIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"webhookApplicationIdOutput",
 		&returns,
 	)
 	return returns
