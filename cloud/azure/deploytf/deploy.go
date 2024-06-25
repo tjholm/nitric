@@ -120,6 +120,6 @@ func (a *NitricAzureTerraformProvider) Post(stack cdktf.TerraformStack) error {
 	return nil
 }
 
-func NewNitricAzurePulumiProvider() *NitricAzureTerraformProvider {
+func NewNitricAzureTerraformProvider() *NitricAzureTerraformProvider {
 	return &NitricAzureTerraformProvider{}
 }

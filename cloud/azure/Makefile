@@ -22,14 +22,18 @@ predeploybin: runtimebin
 deploybin: predeploybin
 	@echo Building Azure Deployment Server
 	@CGO_ENABLED=0 go build -o bin/deploy-azure -ldflags="-s -w -extldflags=-static" -ldflags="-X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=ignore" ./cmd/deploy
+	@CGO_ENABLED=0 go build -o bin/deploy-azuretf -ldflags="-s -w -extldflags=-static" -ldflags="-X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=ignore" ./cmd/deploytf
 	@rm common/runtime/runtime-azure
 
 .PHONY: install
 install: deploybin
-	@echo installing azure deployment server to ${HOME}/.nitric/providers/nitric/azure-0.0.1
 	@mkdir -p ${HOME}/.nitric/providers/nitric/
 	@rm -f ${HOME}/.nitric/providers/nitric/azure-0.0.1
+	@rm -f ${HOME}/.nitric/providers/nitric/azuretf-0.0.1
+	@echo installing azure deployment server to ${HOME}/.nitric/providers/nitric/azure-0.0.1
 	@cp bin/deploy-azure ${HOME}/.nitric/providers/nitric/azure-0.0.1
+	@echo installing azure deployment server to ${HOME}/.nitric/providers/nitric/azuretf-0.0.1
+	@cp bin/deploy-azuretf ${HOME}/.nitric/providers/nitric/azuretf-0.0.1
 
 license-check: runtimebin
 	@echo Checking Azure Runtime OSS Licenses
