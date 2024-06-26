@@ -32,6 +32,42 @@ func validateService_IsTerraformElementParameters(x interface{}) error {
 	return nil
 }
 
+func (j *jsiiProxy_Service) validateSetApplicationClientIdParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetClientSecretParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetContainerAppEnvironmentIdParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetNameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetRegistryPasswordParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetRegistryServerParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetRegistryUsernameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetResourceGroupNameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Service) validateSetTenantIdParameters(val *string) error {
+	return nil
+}
+
 func validateNewServiceParameters(scope constructs.Construct, id *string, config *ServiceConfig) error {
 	return nil
 }

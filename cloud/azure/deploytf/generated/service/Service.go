@@ -14,10 +14,16 @@ import (
 // Source at ./.nitric/modules/service
 type Service interface {
 	cdktf.TerraformModule
+	ApplicationClientId() *string
+	SetApplicationClientId(val *string)
 	// Experimental.
 	CdktfStack() cdktf.TerraformStack
+	ClientSecret() *string
+	SetClientSecret(val *string)
 	// Experimental.
 	ConstructNodeMetadata() *map[string]interface{}
+	ContainerAppEnvironmentId() *string
+	SetContainerAppEnvironmentId(val *string)
 	// Experimental.
 	DependsOn() *[]*string
 	// Experimental.
@@ -30,16 +36,28 @@ type Service interface {
 	Fqn() *string
 	// Experimental.
 	FriendlyUniqueId() *string
+	Name() *string
+	SetName(val *string)
 	// The tree node.
 	Node() constructs.Node
 	// Experimental.
 	Providers() *[]interface{}
 	// Experimental.
 	RawOverrides() interface{}
+	RegistryPassword() *string
+	SetRegistryPassword(val *string)
+	RegistryServer() *string
+	SetRegistryServer(val *string)
+	RegistryUsername() *string
+	SetRegistryUsername(val *string)
+	ResourceGroupName() *string
+	SetResourceGroupName(val *string)
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
 	Source() *string
+	TenantId() *string
+	SetTenantId(val *string)
 	// Experimental.
 	Version() *string
 	// Experimental.
@@ -73,6 +91,16 @@ type jsiiProxy_Service struct {
 	internal.Type__cdktfTerraformModule
 }
 
+func (j *jsiiProxy_Service) ApplicationClientId() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"applicationClientId",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) CdktfStack() cdktf.TerraformStack {
 	var returns cdktf.TerraformStack
 	_jsii_.Get(
@@ -83,11 +111,31 @@ func (j *jsiiProxy_Service) CdktfStack() cdktf.TerraformStack {
 	return returns
 }
 
+func (j *jsiiProxy_Service) ClientSecret() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"clientSecret",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) ConstructNodeMetadata() *map[string]interface{} {
 	var returns *map[string]interface{}
 	_jsii_.Get(
 		j,
 		"constructNodeMetadata",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) ContainerAppEnvironmentId() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"containerAppEnvironmentId",
 		&returns,
 	)
 	return returns
@@ -133,6 +181,16 @@ func (j *jsiiProxy_Service) FriendlyUniqueId() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Service) Name() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"name",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) Node() constructs.Node {
 	var returns constructs.Node
 	_jsii_.Get(
@@ -163,6 +221,46 @@ func (j *jsiiProxy_Service) RawOverrides() interface{} {
 	return returns
 }
 
+func (j *jsiiProxy_Service) RegistryPassword() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryPassword",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) RegistryServer() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryServer",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) RegistryUsername() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryUsername",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) ResourceGroupName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"resourceGroupName",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) SkipAssetCreationFromLocalModules() *bool {
 	var returns *bool
 	_jsii_.Get(
@@ -178,6 +276,16 @@ func (j *jsiiProxy_Service) Source() *string {
 	_jsii_.Get(
 		j,
 		"source",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) TenantId() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"tenantId",
 		&returns,
 	)
 	return returns
@@ -221,6 +329,39 @@ func NewService_Override(s Service, scope constructs.Construct, id *string, conf
 	)
 }
 
+func (j *jsiiProxy_Service)SetApplicationClientId(val *string) {
+	if err := j.validateSetApplicationClientIdParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"applicationClientId",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetClientSecret(val *string) {
+	if err := j.validateSetClientSecretParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"clientSecret",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetContainerAppEnvironmentId(val *string) {
+	if err := j.validateSetContainerAppEnvironmentIdParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"containerAppEnvironmentId",
+		val,
+	)
+}
+
 func (j *jsiiProxy_Service)SetDependsOn(val *[]*string) {
 	_jsii_.Set(
 		j,
@@ -233,6 +374,72 @@ func (j *jsiiProxy_Service)SetForEach(val cdktf.ITerraformIterator) {
 	_jsii_.Set(
 		j,
 		"forEach",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetName(val *string) {
+	if err := j.validateSetNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"name",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetRegistryPassword(val *string) {
+	if err := j.validateSetRegistryPasswordParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"registryPassword",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetRegistryServer(val *string) {
+	if err := j.validateSetRegistryServerParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"registryServer",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetRegistryUsername(val *string) {
+	if err := j.validateSetRegistryUsernameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"registryUsername",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetResourceGroupName(val *string) {
+	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"resourceGroupName",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Service)SetTenantId(val *string) {
+	if err := j.validateSetTenantIdParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"tenantId",
 		val,
 	)
 }

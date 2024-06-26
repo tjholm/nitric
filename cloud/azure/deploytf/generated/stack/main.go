@@ -37,6 +37,7 @@ func init() {
 			_jsii_.MemberProperty{JsiiProperty: "stackIdOutput", GoGetter: "StackIdOutput"},
 			_jsii_.MemberProperty{JsiiProperty: "stackName", GoGetter: "StackName"},
 			_jsii_.MemberProperty{JsiiProperty: "storageAccountNameOutput", GoGetter: "StorageAccountNameOutput"},
+			_jsii_.MemberProperty{JsiiProperty: "subscriptionIdOutput", GoGetter: "SubscriptionIdOutput"},
 			_jsii_.MemberMethod{JsiiMethod: "synthesizeAttributes", GoMethod: "SynthesizeAttributes"},
 			_jsii_.MemberMethod{JsiiMethod: "synthesizeHclAttributes", GoMethod: "SynthesizeHclAttributes"},
 			_jsii_.MemberMethod{JsiiMethod: "toHclTerraform", GoMethod: "ToHclTerraform"},

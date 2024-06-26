@@ -26,6 +26,7 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 	"github.com/nitrictech/nitric/cloud/azure/common"
 	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/service"
 	azstack "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack"
 	"github.com/nitrictech/nitric/cloud/common/deploy"
 	"github.com/nitrictech/nitric/cloud/common/deploy/provider"
@@ -51,6 +52,8 @@ type NitricAzureTerraformProvider struct {
 	Stack azstack.Stack
 
 	Roles roles.Roles
+
+	Services map[string]service.Service
 
 	provider.NitricDefaultOrder
 }
@@ -101,7 +104,7 @@ func (a *NitricAzureTerraformProvider) Pre(stack cdktf.TerraformStack, resources
 	tfRegion := cdktf.NewTerraformVariable(stack, jsii.String("region"), &cdktf.TerraformVariableConfig{
 		Type:        jsii.String("string"),
 		Default:     jsii.String(a.Region),
-		Description: jsii.String("The AWS region to deploy resources to"),
+		Description: jsii.String("The Azure region to deploy resources to"),
 	})
 
 	// Deploy the stack and necessary resources
@@ -111,7 +114,11 @@ func (a *NitricAzureTerraformProvider) Pre(stack cdktf.TerraformStack, resources
 	})
 
 	// Create the roles module
-	a.Roles = roles.NewRoles(stack, jsii.String("nitric-azure-roles"), &roles.RolesConfig{})
+	a.Roles = roles.NewRoles(stack, jsii.String("nitric-azure-roles"), &roles.RolesConfig{
+		ResourceGroupName: a.Stack.ResourceGroupNameOutput(),
+		StackId:           a.Stack.StackIdOutput(),
+		SubscriptionId:    a.Stack.SubscriptionIdOutput(),
+	})
 
 	return nil
 }
@@ -121,5 +128,7 @@ func (a *NitricAzureTerraformProvider) Post(stack cdktf.TerraformStack) error {
 }
 
 func NewNitricAzureTerraformProvider() *NitricAzureTerraformProvider {
-	return &NitricAzureTerraformProvider{}
+	return &NitricAzureTerraformProvider{
+		Services: make(map[string]service.Service),
+	}
 }

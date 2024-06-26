@@ -22,3 +22,8 @@ output "webhook_application_id" {
   description = "The application id of the AzureAD application for webhook delivery"
   value       = azuread_application.webhook.application_id
 }
+
+output "subscription_id" {
+  description = "The subscription ID this stack is deployed to"
+  value = data.azurerm_client_config.current.subscription_id
+}

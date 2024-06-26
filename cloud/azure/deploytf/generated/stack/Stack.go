@@ -52,6 +52,7 @@ type Stack interface {
 	StackName() *string
 	SetStackName(val *string)
 	StorageAccountNameOutput() *string
+	SubscriptionIdOutput() *string
 	// Experimental.
 	Version() *string
 	WebhookApplicationIdOutput() *string
@@ -271,6 +272,16 @@ func (j *jsiiProxy_Stack) StorageAccountNameOutput() *string {
 	_jsii_.Get(
 		j,
 		"storageAccountNameOutput",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) SubscriptionIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"subscriptionIdOutput",
 		&returns,
 	)
 	return returns
