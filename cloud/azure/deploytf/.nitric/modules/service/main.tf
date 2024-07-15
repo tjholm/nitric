@@ -16,12 +16,10 @@ provider "docker" {
 
 locals {
   # The name of the ECR repository
-
   repository_url = "${var.registry_server}/${var.name}"
-  
 }
 
-# Tag the provided docker image with the ECR repository url
+# Tag the provided docker image with the ECR repository u     rl
 resource "docker_tag" "tag" {
   source_image = var.image
   target_image = local.repository_url

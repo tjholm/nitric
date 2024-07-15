@@ -44,22 +44,20 @@ import (
 )
 
 type ContainerAppArgs struct {
-	ResourceGroupName             pulumi.StringInput
-	Location                      pulumi.StringInput
-	StackID                       string
-	SubscriptionID                pulumi.StringInput
-	Registry                      *containerregistry.Registry
-	RegistryUser                  pulumi.StringPtrInput
-	RegistryPass                  pulumi.StringPtrInput
-	ManagedEnv                    *app.ManagedEnvironment
-	Env                           app.EnvironmentVarArray
-	ImageUri                      pulumi.StringInput
-	Service                       *deploy.Service
-	ManagedIdentityID             pulumi.StringOutput
-	MongoDatabaseName             pulumi.StringInput
-	MongoDatabaseConnectionString pulumi.StringInput
-	Config                        common.AzureContainerAppsConfig
-	Schedules                     []*deploy.Resource
+	ResourceGroupName pulumi.StringInput
+	Location          pulumi.StringInput
+	StackID           string
+	SubscriptionID    pulumi.StringInput
+	Registry          *containerregistry.Registry
+	RegistryUser      pulumi.StringPtrInput
+	RegistryPass      pulumi.StringPtrInput
+	ManagedEnv        *app.ManagedEnvironment
+	Env               app.EnvironmentVarArray
+	ImageUri          pulumi.StringInput
+	Service           *deploy.Service
+	ManagedIdentityID pulumi.StringOutput
+	Config            common.AzureContainerAppsConfig
+	Schedules         []*deploy.Resource
 }
 
 type ContainerApp struct {

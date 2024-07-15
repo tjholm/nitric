@@ -1,3 +1,17 @@
+// Copyright 2021 Nitric Technologies Pty Ltd.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package service
 
 import (
@@ -301,7 +315,6 @@ func (j *jsiiProxy_Service) Version() *string {
 	return returns
 }
 
-
 func NewService(scope constructs.Construct, id *string, config *ServiceConfig) Service {
 	_init_.Initialize()
 
@@ -329,7 +342,7 @@ func NewService_Override(s Service, scope constructs.Construct, id *string, conf
 	)
 }
 
-func (j *jsiiProxy_Service)SetApplicationClientId(val *string) {
+func (j *jsiiProxy_Service) SetApplicationClientId(val *string) {
 	if err := j.validateSetApplicationClientIdParameters(val); err != nil {
 		panic(err)
 	}
@@ -340,7 +353,7 @@ func (j *jsiiProxy_Service)SetApplicationClientId(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetClientSecret(val *string) {
+func (j *jsiiProxy_Service) SetClientSecret(val *string) {
 	if err := j.validateSetClientSecretParameters(val); err != nil {
 		panic(err)
 	}
@@ -351,7 +364,7 @@ func (j *jsiiProxy_Service)SetClientSecret(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetContainerAppEnvironmentId(val *string) {
+func (j *jsiiProxy_Service) SetContainerAppEnvironmentId(val *string) {
 	if err := j.validateSetContainerAppEnvironmentIdParameters(val); err != nil {
 		panic(err)
 	}
@@ -362,7 +375,7 @@ func (j *jsiiProxy_Service)SetContainerAppEnvironmentId(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetDependsOn(val *[]*string) {
+func (j *jsiiProxy_Service) SetDependsOn(val *[]*string) {
 	_jsii_.Set(
 		j,
 		"dependsOn",
@@ -370,7 +383,7 @@ func (j *jsiiProxy_Service)SetDependsOn(val *[]*string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetForEach(val cdktf.ITerraformIterator) {
+func (j *jsiiProxy_Service) SetForEach(val cdktf.ITerraformIterator) {
 	_jsii_.Set(
 		j,
 		"forEach",
@@ -378,7 +391,7 @@ func (j *jsiiProxy_Service)SetForEach(val cdktf.ITerraformIterator) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetName(val *string) {
+func (j *jsiiProxy_Service) SetName(val *string) {
 	if err := j.validateSetNameParameters(val); err != nil {
 		panic(err)
 	}
@@ -389,7 +402,7 @@ func (j *jsiiProxy_Service)SetName(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetRegistryPassword(val *string) {
+func (j *jsiiProxy_Service) SetRegistryPassword(val *string) {
 	if err := j.validateSetRegistryPasswordParameters(val); err != nil {
 		panic(err)
 	}
@@ -400,7 +413,7 @@ func (j *jsiiProxy_Service)SetRegistryPassword(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetRegistryServer(val *string) {
+func (j *jsiiProxy_Service) SetRegistryServer(val *string) {
 	if err := j.validateSetRegistryServerParameters(val); err != nil {
 		panic(err)
 	}
@@ -411,7 +424,7 @@ func (j *jsiiProxy_Service)SetRegistryServer(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetRegistryUsername(val *string) {
+func (j *jsiiProxy_Service) SetRegistryUsername(val *string) {
 	if err := j.validateSetRegistryUsernameParameters(val); err != nil {
 		panic(err)
 	}
@@ -422,7 +435,7 @@ func (j *jsiiProxy_Service)SetRegistryUsername(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetResourceGroupName(val *string) {
+func (j *jsiiProxy_Service) SetResourceGroupName(val *string) {
 	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
 		panic(err)
 	}
@@ -433,7 +446,7 @@ func (j *jsiiProxy_Service)SetResourceGroupName(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Service)SetTenantId(val *string) {
+func (j *jsiiProxy_Service) SetTenantId(val *string) {
 	if err := j.validateSetTenantIdParameters(val); err != nil {
 		panic(err)
 	}
@@ -648,4 +661,3 @@ func (s *jsiiProxy_Service) ToTerraform() interface{} {
 
 	return returns
 }
-

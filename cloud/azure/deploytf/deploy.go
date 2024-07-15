@@ -31,16 +31,10 @@ import (
 	"github.com/nitrictech/nitric/cloud/common/deploy"
 	"github.com/nitrictech/nitric/cloud/common/deploy/provider"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
-	apimanagement "github.com/pulumi/pulumi-azure-native-sdk/apimanagement"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-type ApiResources struct {
-	ApiManagementService *apimanagement.ApiManagementService
-	Api                  *apimanagement.Api
-}
 
 type NitricAzureTerraformProvider struct {
 	*deploy.CommonStackDetails

@@ -43,15 +43,15 @@ sourcefiles := $(shell find . -type f -name "*.go" -o -name "*.dockerfile")
 
 fmt:
 	@go run github.com/google/addlicense -c "Nitric Technologies Pty Ltd." -y "2021" $(sourcefiles)
-	@touch deploy/runtime/runtime-azure
+	@touch common/runtime/runtime-azure
 	$(GOLANGCI_LINT) run --fix
-	@rm deploy/runtime/runtime-azure
+	@rm common/runtime/runtime-azure
 
 lint:
 	@go run github.com/google/addlicense -check -c "Nitric Technologies Pty Ltd." -y "2021" $(sourcefiles)
-	@touch deploy/runtime/runtime-azure
+	@touch common/runtime/runtime-azure
 	$(GOLANGCI_LINT) run
-	@rm deploy/runtime/runtime-azure
+	@rm common/runtime/runtime-azure
 
 test: generate-mocks
 	@echo Running unit tests

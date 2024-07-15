@@ -71,6 +71,5 @@ resource "azuread_application" "webhook" {
     display_name         = "AzureEventGridSecureWebhookSubscriber"
     id                   = "4962773b-9cdb-44cf-a8bf-237846a00ab7"
     value                = "4962773b-9cdb-44cf-a8bf-237846a00ab7"
-  
   }
 }

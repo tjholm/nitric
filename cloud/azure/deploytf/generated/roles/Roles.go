@@ -1,3 +1,17 @@
+// Copyright 2021 Nitric Technologies Pty Ltd.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package roles
 
 import (
@@ -229,7 +243,6 @@ func (j *jsiiProxy_Roles) Version() *string {
 	return returns
 }
 
-
 func NewRoles(scope constructs.Construct, id *string, config *RolesConfig) Roles {
 	_init_.Initialize()
 
@@ -257,7 +270,7 @@ func NewRoles_Override(r Roles, scope constructs.Construct, id *string, config *
 	)
 }
 
-func (j *jsiiProxy_Roles)SetDependsOn(val *[]*string) {
+func (j *jsiiProxy_Roles) SetDependsOn(val *[]*string) {
 	_jsii_.Set(
 		j,
 		"dependsOn",
@@ -265,7 +278,7 @@ func (j *jsiiProxy_Roles)SetDependsOn(val *[]*string) {
 	)
 }
 
-func (j *jsiiProxy_Roles)SetForEach(val cdktf.ITerraformIterator) {
+func (j *jsiiProxy_Roles) SetForEach(val cdktf.ITerraformIterator) {
 	_jsii_.Set(
 		j,
 		"forEach",
@@ -273,7 +286,7 @@ func (j *jsiiProxy_Roles)SetForEach(val cdktf.ITerraformIterator) {
 	)
 }
 
-func (j *jsiiProxy_Roles)SetResourceGroupName(val *string) {
+func (j *jsiiProxy_Roles) SetResourceGroupName(val *string) {
 	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
 		panic(err)
 	}
@@ -284,7 +297,7 @@ func (j *jsiiProxy_Roles)SetResourceGroupName(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Roles)SetStackId(val *string) {
+func (j *jsiiProxy_Roles) SetStackId(val *string) {
 	if err := j.validateSetStackIdParameters(val); err != nil {
 		panic(err)
 	}
@@ -295,7 +308,7 @@ func (j *jsiiProxy_Roles)SetStackId(val *string) {
 	)
 }
 
-func (j *jsiiProxy_Roles)SetSubscriptionId(val *string) {
+func (j *jsiiProxy_Roles) SetSubscriptionId(val *string) {
 	if err := j.validateSetSubscriptionIdParameters(val); err != nil {
 		panic(err)
 	}
@@ -510,4 +523,3 @@ func (r *jsiiProxy_Roles) ToTerraform() interface{} {
 
 	return returns
 }
-
