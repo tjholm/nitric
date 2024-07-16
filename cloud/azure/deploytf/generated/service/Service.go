@@ -32,16 +32,16 @@ type Service interface {
 	SetApplicationClientId(val *string)
 	// Experimental.
 	CdktfStack() cdktf.TerraformStack
-	ClientSecret() *string
-	SetClientSecret(val *string)
 	// Experimental.
 	ConstructNodeMetadata() *map[string]interface{}
 	ContainerAppEnvironmentId() *string
 	SetContainerAppEnvironmentId(val *string)
+	ContainerAppOutput() *string
 	// Experimental.
 	DependsOn() *[]*string
 	// Experimental.
 	SetDependsOn(val *[]*string)
+	EventTokenOutput() *string
 	// Experimental.
 	ForEach() cdktf.ITerraformIterator
 	// Experimental.
@@ -50,6 +50,7 @@ type Service interface {
 	Fqn() *string
 	// Experimental.
 	FriendlyUniqueId() *string
+	HostUrlOutput() *string
 	Name() *string
 	SetName(val *string)
 	// The tree node.
@@ -66,12 +67,12 @@ type Service interface {
 	SetRegistryUsername(val *string)
 	ResourceGroupName() *string
 	SetResourceGroupName(val *string)
+	ServicePrincipalClientIdOutput() *string
+	ServicePrincipalTenantIdOutput() *string
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
 	Source() *string
-	TenantId() *string
-	SetTenantId(val *string)
 	// Experimental.
 	Version() *string
 	// Experimental.
@@ -125,16 +126,6 @@ func (j *jsiiProxy_Service) CdktfStack() cdktf.TerraformStack {
 	return returns
 }
 
-func (j *jsiiProxy_Service) ClientSecret() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"clientSecret",
-		&returns,
-	)
-	return returns
-}
-
 func (j *jsiiProxy_Service) ConstructNodeMetadata() *map[string]interface{} {
 	var returns *map[string]interface{}
 	_jsii_.Get(
@@ -155,11 +146,31 @@ func (j *jsiiProxy_Service) ContainerAppEnvironmentId() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Service) ContainerAppOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"containerAppOutput",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) DependsOn() *[]*string {
 	var returns *[]*string
 	_jsii_.Get(
 		j,
 		"dependsOn",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) EventTokenOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"eventTokenOutput",
 		&returns,
 	)
 	return returns
@@ -190,6 +201,16 @@ func (j *jsiiProxy_Service) FriendlyUniqueId() *string {
 	_jsii_.Get(
 		j,
 		"friendlyUniqueId",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) HostUrlOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"hostUrlOutput",
 		&returns,
 	)
 	return returns
@@ -275,6 +296,26 @@ func (j *jsiiProxy_Service) ResourceGroupName() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Service) ServicePrincipalClientIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"servicePrincipalClientIdOutput",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Service) ServicePrincipalTenantIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"servicePrincipalTenantIdOutput",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Service) SkipAssetCreationFromLocalModules() *bool {
 	var returns *bool
 	_jsii_.Get(
@@ -290,16 +331,6 @@ func (j *jsiiProxy_Service) Source() *string {
 	_jsii_.Get(
 		j,
 		"source",
-		&returns,
-	)
-	return returns
-}
-
-func (j *jsiiProxy_Service) TenantId() *string {
-	var returns *string
-	_jsii_.Get(
-		j,
-		"tenantId",
 		&returns,
 	)
 	return returns
@@ -349,17 +380,6 @@ func (j *jsiiProxy_Service) SetApplicationClientId(val *string) {
 	_jsii_.Set(
 		j,
 		"applicationClientId",
-		val,
-	)
-}
-
-func (j *jsiiProxy_Service) SetClientSecret(val *string) {
-	if err := j.validateSetClientSecretParameters(val); err != nil {
-		panic(err)
-	}
-	_jsii_.Set(
-		j,
-		"clientSecret",
 		val,
 	)
 }
@@ -442,17 +462,6 @@ func (j *jsiiProxy_Service) SetResourceGroupName(val *string) {
 	_jsii_.Set(
 		j,
 		"resourceGroupName",
-		val,
-	)
-}
-
-func (j *jsiiProxy_Service) SetTenantId(val *string) {
-	if err := j.validateSetTenantIdParameters(val); err != nil {
-		panic(err)
-	}
-	_jsii_.Set(
-		j,
-		"tenantId",
 		val,
 	)
 }

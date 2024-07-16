@@ -18,19 +18,22 @@ package deploytf
 
 import (
 	"embed"
-	_ "embed"
 	"io/fs"
 
 	"github.com/aws/jsii-runtime-go"
+	"github.com/samber/lo"
+
 	// azureprovider "github.com/cdktf/cdktf-provider-azurerm-go/azurerm/v12/provider"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 	"github.com/nitrictech/nitric/cloud/azure/common"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/bucket"
 	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles"
 	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/service"
 	azstack "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack"
 	"github.com/nitrictech/nitric/cloud/common/deploy"
 	"github.com/nitrictech/nitric/cloud/common/deploy/provider"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
+	resourcespb "github.com/nitrictech/nitric/core/pkg/proto/resources/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -48,6 +51,8 @@ type NitricAzureTerraformProvider struct {
 	Roles roles.Roles
 
 	Services map[string]service.Service
+
+	Buckets map[string]bucket.Bucket
 
 	provider.NitricDefaultOrder
 }
@@ -101,10 +106,22 @@ func (a *NitricAzureTerraformProvider) Pre(stack cdktf.TerraformStack, resources
 		Description: jsii.String("The Azure region to deploy resources to"),
 	})
 
+	deployStorage := len(lo.Filter(resources, func(r *deploymentspb.Resource, idx int) bool {
+		return r.GetId().GetType() == resourcespb.ResourceType_Bucket ||
+			r.GetId().GetType() == resourcespb.ResourceType_Queue ||
+			r.GetId().GetType() == resourcespb.ResourceType_KeyValueStore
+	})) > 0
+
+	deployKeyVault := len(lo.Filter(resources, func(r *deploymentspb.Resource, idx int) bool {
+		return r.GetId().GetType() == resourcespb.ResourceType_Secret
+	})) > 0
+
 	// Deploy the stack and necessary resources
 	a.Stack = azstack.NewStack(stack, jsii.String("nitric-azure-stack"), &azstack.StackConfig{
-		Region:    tfRegion.StringValue(),
-		StackName: jsii.String(a.StackName),
+		Region:         tfRegion.StringValue(),
+		StackName:      jsii.String(a.StackName),
+		DeployKeyVault: jsii.Bool(deployKeyVault),
+		DeployStorage:  jsii.Bool(deployStorage),
 	})
 
 	// Create the roles module
@@ -124,5 +141,6 @@ func (a *NitricAzureTerraformProvider) Post(stack cdktf.TerraformStack) error {
 func NewNitricAzureTerraformProvider() *NitricAzureTerraformProvider {
 	return &NitricAzureTerraformProvider{
 		Services: make(map[string]service.Service),
+		Buckets:  make(map[string]bucket.Bucket),
 	}
 }

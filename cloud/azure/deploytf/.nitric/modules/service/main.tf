@@ -98,17 +98,17 @@ resource "azurerm_container_app" "container_app" {
 
   secret {
     name = "client_id"
-    value = var.application_client_id
+    value = azuread_service_principal.sp.client_id
   }
 
   secret {
     name = "tenant-id"
-    value = var.tenant_id
+    value = azuread_service_principal.sp.application_tenant_id
   }
 
   secret {
     name = "client_secret"
-    value = var.client_secret
+    value = azuread_service_principal_password.sp_password.value
   }
 
   template {

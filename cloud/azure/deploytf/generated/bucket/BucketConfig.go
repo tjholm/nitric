@@ -27,4 +27,10 @@ type BucketConfig struct {
 	Providers *[]interface{} `field:"optional" json:"providers" yaml:"providers"`
 	// Experimental.
 	SkipAssetCreationFromLocalModules *bool `field:"optional" json:"skipAssetCreationFromLocalModules" yaml:"skipAssetCreationFromLocalModules"`
+	// The name of the bucket to create.
+	BucketName *string `field:"required" json:"bucketName" yaml:"bucketName"`
+	// The list of subscribers to the bucket.
+	BucketSubcribers interface{} `field:"required" json:"bucketSubcribers" yaml:"bucketSubcribers"`
+	// The name of the storage account to create the bucket in.
+	StorageAccountName *string `field:"required" json:"storageAccountName" yaml:"storageAccountName"`
 }

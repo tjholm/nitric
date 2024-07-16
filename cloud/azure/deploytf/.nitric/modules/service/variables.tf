@@ -31,15 +31,3 @@ variable "registry_password" {
   description = "The password of the container registry"
   type        = string
 }
-
-variable "tenant_id" {
-  description = "The tenant ID of the application for which to create this services service principal"
-  type        = string
-}
-
-variable "client_secret" {
-  description = "The client secret of the application for which to create this services service principal"
-  type        = string
-}
-
-

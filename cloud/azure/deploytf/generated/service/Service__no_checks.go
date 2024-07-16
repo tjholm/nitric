@@ -50,10 +50,6 @@ func (j *jsiiProxy_Service) validateSetApplicationClientIdParameters(val *string
 	return nil
 }
 
-func (j *jsiiProxy_Service) validateSetClientSecretParameters(val *string) error {
-	return nil
-}
-
 func (j *jsiiProxy_Service) validateSetContainerAppEnvironmentIdParameters(val *string) error {
 	return nil
 }
@@ -75,10 +71,6 @@ func (j *jsiiProxy_Service) validateSetRegistryUsernameParameters(val *string) e
 }
 
 func (j *jsiiProxy_Service) validateSetResourceGroupNameParameters(val *string) error {
-	return nil
-}
-
-func (j *jsiiProxy_Service) validateSetTenantIdParameters(val *string) error {
 	return nil
 }
 

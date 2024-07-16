@@ -46,6 +46,18 @@ func validateBucket_IsTerraformElementParameters(x interface{}) error {
 	return nil
 }
 
+func (j *jsiiProxy_Bucket) validateSetBucketNameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Bucket) validateSetBucketSubcribersParameters(val interface{}) error {
+	return nil
+}
+
+func (j *jsiiProxy_Bucket) validateSetStorageAccountNameParameters(val *string) error {
+	return nil
+}
+
 func validateNewBucketParameters(scope constructs.Construct, id *string, config *BucketConfig) error {
 	return nil
 }

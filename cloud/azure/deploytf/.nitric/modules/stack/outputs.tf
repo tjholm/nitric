@@ -23,7 +23,31 @@ output "webhook_application_id" {
   value       = azuread_application.webhook.application_id
 }
 
+output "tenant_id" {
+  description = "The tenant ID this stack is deployed to"
+  value = data.azurerm_client_config.current.tenant_id
+}
 output "subscription_id" {
   description = "The subscription ID this stack is deployed to"
   value = data.azurerm_client_config.current.subscription_id
+}
+
+output "container_app_environment_id" {
+  description = "The ID of the Azure container apps environment"
+  value       = azurerm_container_app_environment.environment.id
+}
+
+output "registry_login_server" {
+  description = "The login server of the Azure container registry"
+  value       = azurerm_container_registry.acr.login_server
+}
+
+output "registry_user_name" {
+  description = "The username of the Azure container registry"
+  value       = azurerm_container_registry.acr.admin_username
+}
+
+output "registry_password" {
+  description = "The password of the Azure container registry"
+  value       = azurerm_container_registry.acr.admin_password
 }

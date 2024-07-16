@@ -32,6 +32,7 @@ type Stack interface {
 	CdktfStack() cdktf.TerraformStack
 	// Experimental.
 	ConstructNodeMetadata() *map[string]interface{}
+	ContainerAppEnvironmentIdOutput() *string
 	// Experimental.
 	DependsOn() *[]*string
 	// Experimental.
@@ -57,6 +58,9 @@ type Stack interface {
 	RawOverrides() interface{}
 	Region() *string
 	SetRegion(val *string)
+	RegistryLoginServerOutput() *string
+	RegistryPasswordOutput() *string
+	RegistryUserNameOutput() *string
 	ResourceGroupNameOutput() *string
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
@@ -67,6 +71,7 @@ type Stack interface {
 	SetStackName(val *string)
 	StorageAccountNameOutput() *string
 	SubscriptionIdOutput() *string
+	TenantIdOutput() *string
 	// Experimental.
 	Version() *string
 	WebhookApplicationIdOutput() *string
@@ -116,6 +121,16 @@ func (j *jsiiProxy_Stack) ConstructNodeMetadata() *map[string]interface{} {
 	_jsii_.Get(
 		j,
 		"constructNodeMetadata",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) ContainerAppEnvironmentIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"containerAppEnvironmentIdOutput",
 		&returns,
 	)
 	return returns
@@ -231,6 +246,36 @@ func (j *jsiiProxy_Stack) Region() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Stack) RegistryLoginServerOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryLoginServerOutput",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) RegistryPasswordOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryPasswordOutput",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) RegistryUserNameOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"registryUserNameOutput",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Stack) ResourceGroupNameOutput() *string {
 	var returns *string
 	_jsii_.Get(
@@ -296,6 +341,16 @@ func (j *jsiiProxy_Stack) SubscriptionIdOutput() *string {
 	_jsii_.Get(
 		j,
 		"subscriptionIdOutput",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Stack) TenantIdOutput() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"tenantIdOutput",
 		&returns,
 	)
 	return returns

@@ -26,7 +26,7 @@ deploybin: predeploybin
 	@rm common/runtime/runtime-azure
 
 .PHONY: install
-install: deploybin
+install: generate-terraform deploybin
 	@mkdir -p ${HOME}/.nitric/providers/nitric/
 	@rm -f ${HOME}/.nitric/providers/nitric/azure-0.0.1
 	@rm -f ${HOME}/.nitric/providers/nitric/azuretf-0.0.1

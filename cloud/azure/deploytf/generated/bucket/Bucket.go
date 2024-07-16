@@ -28,6 +28,10 @@ import (
 // Source at ./.nitric/modules/bucket
 type Bucket interface {
 	cdktf.TerraformModule
+	BucketName() *string
+	SetBucketName(val *string)
+	BucketSubcribers() interface{}
+	SetBucketSubcribers(val interface{})
 	// Experimental.
 	CdktfStack() cdktf.TerraformStack
 	// Experimental.
@@ -54,6 +58,8 @@ type Bucket interface {
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
 	Source() *string
+	StorageAccountName() *string
+	SetStorageAccountName(val *string)
 	// Experimental.
 	Version() *string
 	// Experimental.
@@ -85,6 +91,26 @@ type Bucket interface {
 // The jsii proxy struct for Bucket
 type jsiiProxy_Bucket struct {
 	internal.Type__cdktfTerraformModule
+}
+
+func (j *jsiiProxy_Bucket) BucketName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"bucketName",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Bucket) BucketSubcribers() interface{} {
+	var returns interface{}
+	_jsii_.Get(
+		j,
+		"bucketSubcribers",
+		&returns,
+	)
+	return returns
 }
 
 func (j *jsiiProxy_Bucket) CdktfStack() cdktf.TerraformStack {
@@ -197,6 +223,16 @@ func (j *jsiiProxy_Bucket) Source() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Bucket) StorageAccountName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"storageAccountName",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Bucket) Version() *string {
 	var returns *string
 	_jsii_.Get(
@@ -234,6 +270,28 @@ func NewBucket_Override(b Bucket, scope constructs.Construct, id *string, config
 	)
 }
 
+func (j *jsiiProxy_Bucket) SetBucketName(val *string) {
+	if err := j.validateSetBucketNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"bucketName",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Bucket) SetBucketSubcribers(val interface{}) {
+	if err := j.validateSetBucketSubcribersParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"bucketSubcribers",
+		val,
+	)
+}
+
 func (j *jsiiProxy_Bucket) SetDependsOn(val *[]*string) {
 	_jsii_.Set(
 		j,
@@ -246,6 +304,17 @@ func (j *jsiiProxy_Bucket) SetForEach(val cdktf.ITerraformIterator) {
 	_jsii_.Set(
 		j,
 		"forEach",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Bucket) SetStorageAccountName(val *string) {
+	if err := j.validateSetStorageAccountNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"storageAccountName",
 		val,
 	)
 }

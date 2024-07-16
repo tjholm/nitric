@@ -25,12 +25,13 @@ import (
 // Service - Deploy an service (Service)
 func (a *NitricAzureTerraformProvider) Service(stack cdktf.TerraformStack, name string, config *deploymentspb.Service, runtimeProvider provider.RuntimeProvider) error {
 	a.Services[name] = service.NewService(stack, jsii.String(name), &service.ServiceConfig{
-		Name: jsii.String(name),
-		// ApplicationClientId: TODO,
-		// ClientSecret: TODO,
-		// ContainerAppEnvironmentId: TODO,
-		ResourceGroupName: a.Stack.ResourceGroupNameOutput(),
-		// TenantId:          TODO,
+		Name:                      jsii.String(name),
+		ApplicationClientId:       a.Stack.WebhookApplicationIdOutput(),
+		ContainerAppEnvironmentId: a.Stack.ContainerAppEnvironmentIdOutput(),
+		ResourceGroupName:         a.Stack.ResourceGroupNameOutput(),
+		RegistryServer:            a.Stack.RegistryLoginServerOutput(),
+		RegistryUsername:          a.Stack.RegistryUserNameOutput(),
+		RegistryPassword:          a.Stack.RegistryPasswordOutput(),
 	})
 
 	return nil
