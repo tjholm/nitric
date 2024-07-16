@@ -23,5 +23,5 @@ import (
 
 // Http - Deploy a HTTP Proxy
 func (a *NitricAzureTerraformProvider) Http(tack cdktf.TerraformStack, name string, config *deploymentspb.Http) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("http proxies not implemented")
 }

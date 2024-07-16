@@ -23,5 +23,5 @@ import (
 
 // Api - Deploy an API Gateway
 func (a *NitricAzureTerraformProvider) Api(tack cdktf.TerraformStack, name string, config *deploymentspb.Api) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("apis not implemented")
 }

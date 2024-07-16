@@ -27,8 +27,14 @@ type TopicConfig struct {
 	Providers *[]interface{} `field:"optional" json:"providers" yaml:"providers"`
 	// Experimental.
 	SkipAssetCreationFromLocalModules *bool `field:"optional" json:"skipAssetCreationFromLocalModules" yaml:"skipAssetCreationFromLocalModules"`
+	// The location/region where the topic should be created.
+	Location *string `field:"required" json:"location" yaml:"location"`
+	// The name of the resource group in which to create the topic.
+	ResourceGroupName *string `field:"required" json:"resourceGroupName" yaml:"resourceGroupName"`
 	// The ID of the Nitric stack.
 	StackId *string `field:"required" json:"stackId" yaml:"stackId"`
+	// A list of subscribers to the topic.
+	Subscribers interface{} `field:"required" json:"subscribers" yaml:"subscribers"`
 	// The name of the bucket.
 	//
 	// This must be globally unique.

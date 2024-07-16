@@ -15,13 +15,41 @@
 package deploytf
 
 import (
-	"fmt"
-
+	"github.com/aws/jsii-runtime-go"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/topic"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
 )
 
+type TopicSubscriber struct {
+	Url                      string `json:"url"`
+	EventToken               string `json:"event_token"`
+	ServicePrincipalId       string `json:"service_principal_client_id"`
+	ServicePrincipalTenantId string `json:"service_principal_tenant_id"`
+}
+
 // Topic - Deploy a Pub/Sub Topic
 func (a *NitricAzureTerraformProvider) Topic(stack cdktf.TerraformStack, name string, config *deploymentspb.Topic) error {
-	return fmt.Errorf("Not implemented")
+	subscribers := map[string]*TopicSubscriber{}
+
+	for _, s := range config.Subscriptions {
+		deployedService := a.Services[s.GetService()]
+
+		subscribers[s.GetService()] = &TopicSubscriber{
+			Url:                      *deployedService.HostUrlOutput(),
+			EventToken:               *deployedService.EventTokenOutput(),
+			ServicePrincipalId:       *deployedService.ServicePrincipalClientIdOutput(),
+			ServicePrincipalTenantId: *deployedService.ServicePrincipalTenantIdOutput(),
+		}
+	}
+
+	a.Topics[name] = topic.NewTopic(stack, jsii.String(name), &topic.TopicConfig{
+		TopicName:         jsii.String(name),
+		Location:          jsii.String(a.Region),
+		ResourceGroupName: a.Stack.ResourceGroupNameOutput(),
+		StackId:           a.Stack.StackIdOutput(),
+		Subscribers:       subscribers,
+	})
+
+	return nil
 }

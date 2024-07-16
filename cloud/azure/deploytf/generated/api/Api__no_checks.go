@@ -46,7 +46,23 @@ func validateApi_IsTerraformElementParameters(x interface{}) error {
 	return nil
 }
 
+func (j *jsiiProxy_Api) validateSetLocationParameters(val *string) error {
+	return nil
+}
+
 func (j *jsiiProxy_Api) validateSetNameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Api) validateSetPublisherEmailParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Api) validateSetPublisherNameParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Api) validateSetResourceGroupNameParameters(val *string) error {
 	return nil
 }
 

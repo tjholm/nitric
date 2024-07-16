@@ -23,5 +23,5 @@ import (
 
 // Schedule - Deploy a Schedule
 func (a *NitricAzureTerraformProvider) Schedule(stack cdktf.TerraformStack, name string, config *deploymentspb.Schedule) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("schedules not implemented")
 }

@@ -23,5 +23,5 @@ import (
 
 // Secret - Deploy a Secret
 func (a *NitricAzureTerraformProvider) Secret(stack cdktf.TerraformStack, name string, config *deploymentspb.Secret) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("secrets not implemented")
 }

@@ -44,18 +44,24 @@ type Topic interface {
 	Fqn() *string
 	// Experimental.
 	FriendlyUniqueId() *string
+	Location() *string
+	SetLocation(val *string)
 	// The tree node.
 	Node() constructs.Node
 	// Experimental.
 	Providers() *[]interface{}
 	// Experimental.
 	RawOverrides() interface{}
+	ResourceGroupName() *string
+	SetResourceGroupName(val *string)
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
 	Source() *string
 	StackId() *string
 	SetStackId(val *string)
+	Subscribers() interface{}
+	SetSubscribers(val interface{})
 	TopicName() *string
 	SetTopicName(val *string)
 	// Experimental.
@@ -151,6 +157,16 @@ func (j *jsiiProxy_Topic) FriendlyUniqueId() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Topic) Location() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"location",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Topic) Node() constructs.Node {
 	var returns constructs.Node
 	_jsii_.Get(
@@ -181,6 +197,16 @@ func (j *jsiiProxy_Topic) RawOverrides() interface{} {
 	return returns
 }
 
+func (j *jsiiProxy_Topic) ResourceGroupName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"resourceGroupName",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Topic) SkipAssetCreationFromLocalModules() *bool {
 	var returns *bool
 	_jsii_.Get(
@@ -206,6 +232,16 @@ func (j *jsiiProxy_Topic) StackId() *string {
 	_jsii_.Get(
 		j,
 		"stackId",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Topic) Subscribers() interface{} {
+	var returns interface{}
+	_jsii_.Get(
+		j,
+		"subscribers",
 		&returns,
 	)
 	return returns
@@ -274,6 +310,28 @@ func (j *jsiiProxy_Topic) SetForEach(val cdktf.ITerraformIterator) {
 	)
 }
 
+func (j *jsiiProxy_Topic) SetLocation(val *string) {
+	if err := j.validateSetLocationParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"location",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Topic) SetResourceGroupName(val *string) {
+	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"resourceGroupName",
+		val,
+	)
+}
+
 func (j *jsiiProxy_Topic) SetStackId(val *string) {
 	if err := j.validateSetStackIdParameters(val); err != nil {
 		panic(err)
@@ -281,6 +339,17 @@ func (j *jsiiProxy_Topic) SetStackId(val *string) {
 	_jsii_.Set(
 		j,
 		"stackId",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Topic) SetSubscribers(val interface{}) {
+	if err := j.validateSetSubscribersParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"subscribers",
 		val,
 	)
 }

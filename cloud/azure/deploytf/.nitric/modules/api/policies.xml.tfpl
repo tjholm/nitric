@@ -1,0 +1,29 @@
+<policies>
+    <inbound>
+        <base />
+        <set-backend-service base-url="https://${endpoint}" />
+        %{ for jwt in jwts ~}
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid." require-expiration-time="false">  
+            <openid-config url="${jwt.issuer}.well-known/openid-configuration" />  
+            <required-claims>  
+                <claim name="aud" match="any" separator=",">  
+                    <value>${jwt.audiences}</value>  
+                </claim>  
+            </required-claims>  
+        </validate-jwt>
+        %{ endfor ~}
+        <authentication-managed-identity resource="${resource_id}" client-id="${client_id}" />
+        <set-header name="X-Forwarded-Authorization" exists-action="override">
+            <value>@(context.Request.Headers.GetValueOrDefault("Authorization",""))</value>
+        </set-header>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

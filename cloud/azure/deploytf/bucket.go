@@ -15,7 +15,6 @@
 package deploytf
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aws/jsii-runtime-go"
@@ -72,5 +71,5 @@ func (a *NitricAzureTerraformProvider) Bucket(stack cdktf.TerraformStack, name s
 		BucketSubcribers:   subscribers,
 	})
 
-	return fmt.Errorf("Not implemented")
+	return nil
 }

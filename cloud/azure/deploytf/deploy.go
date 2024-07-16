@@ -30,11 +30,11 @@ import (
 	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/roles"
 	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/service"
 	azstack "github.com/nitrictech/nitric/cloud/azure/deploytf/generated/stack"
+	"github.com/nitrictech/nitric/cloud/azure/deploytf/generated/topic"
 	"github.com/nitrictech/nitric/cloud/common/deploy"
 	"github.com/nitrictech/nitric/cloud/common/deploy/provider"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
 	resourcespb "github.com/nitrictech/nitric/core/pkg/proto/resources/v1"
-	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -54,6 +54,8 @@ type NitricAzureTerraformProvider struct {
 
 	Buckets map[string]bucket.Bucket
 
+	Topics map[string]topic.Topic
+
 	provider.NitricDefaultOrder
 }
 
@@ -68,20 +70,20 @@ func (a *NitricAzureTerraformProvider) CdkTfModules() (string, fs.FS, error) {
 
 var _ provider.NitricTerraformProvider = (*NitricAzureTerraformProvider)(nil)
 
-const (
-	pulumiAzureNativeVersion = "2.40.0"
-	pulumiAzureVersion       = "5.52.0"
-)
+// const (
+// 	pulumiAzureNativeVersion = "2.40.0"
+// 	pulumiAzureVersion       = "5.52.0"
+// )
 
-func (a *NitricAzureTerraformProvider) Config() (auto.ConfigMap, error) {
-	return auto.ConfigMap{
-		"azure-native:location": auto.ConfigValue{Value: a.Region},
-		"azure:location":        auto.ConfigValue{Value: a.Region},
-		"azure-native:version":  auto.ConfigValue{Value: pulumiAzureNativeVersion},
-		"azure:version":         auto.ConfigValue{Value: pulumiAzureVersion},
-		"docker:version":        auto.ConfigValue{Value: deploy.PulumiDockerVersion},
-	}, nil
-}
+// func (a *NitricAzureTerraformProvider) Config() (auto.ConfigMap, error) {
+// 	return auto.ConfigMap{
+// 		"azure-native:location": auto.ConfigValue{Value: a.Region},
+// 		"azure:location":        auto.ConfigValue{Value: a.Region},
+// 		"azure-native:version":  auto.ConfigValue{Value: pulumiAzureNativeVersion},
+// 		"azure:version":         auto.ConfigValue{Value: pulumiAzureVersion},
+// 		"docker:version":        auto.ConfigValue{Value: deploy.PulumiDockerVersion},
+// 	}, nil
+// }
 
 func (a *NitricAzureTerraformProvider) Init(attributes map[string]interface{}) error {
 	var err error
@@ -142,5 +144,6 @@ func NewNitricAzureTerraformProvider() *NitricAzureTerraformProvider {
 	return &NitricAzureTerraformProvider{
 		Services: make(map[string]service.Service),
 		Buckets:  make(map[string]bucket.Bucket),
+		Topics:   make(map[string]topic.Topic),
 	}
 }

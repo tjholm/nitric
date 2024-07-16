@@ -23,5 +23,5 @@ import (
 
 // Queue - Deploy a Queue
 func (a *NitricAzureTerraformProvider) Queue(stack cdktf.TerraformStack, name string, config *deploymentspb.Queue) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("queues not implemented")
 }

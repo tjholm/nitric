@@ -46,7 +46,19 @@ func validateTopic_IsTerraformElementParameters(x interface{}) error {
 	return nil
 }
 
+func (j *jsiiProxy_Topic) validateSetLocationParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Topic) validateSetResourceGroupNameParameters(val *string) error {
+	return nil
+}
+
 func (j *jsiiProxy_Topic) validateSetStackIdParameters(val *string) error {
+	return nil
+}
+
+func (j *jsiiProxy_Topic) validateSetSubscribersParameters(val interface{}) error {
 	return nil
 }
 

@@ -27,8 +27,16 @@ type ApiConfig struct {
 	Providers *[]interface{} `field:"optional" json:"providers" yaml:"providers"`
 	// Experimental.
 	SkipAssetCreationFromLocalModules *bool `field:"optional" json:"skipAssetCreationFromLocalModules" yaml:"skipAssetCreationFromLocalModules"`
+	// The location of the API Gateway.
+	Location *string `field:"required" json:"location" yaml:"location"`
 	// The name of the API Gateway.
 	Name *string `field:"required" json:"name" yaml:"name"`
+	// The email of the publisher.
+	PublisherEmail *string `field:"required" json:"publisherEmail" yaml:"publisherEmail"`
+	// The name of the publisher.
+	PublisherName *string `field:"required" json:"publisherName" yaml:"publisherName"`
+	// The name of the resource group.
+	ResourceGroupName *string `field:"required" json:"resourceGroupName" yaml:"resourceGroupName"`
 	// Open API spec.
 	Spec *string `field:"required" json:"spec" yaml:"spec"`
 	// The ID of the stack.

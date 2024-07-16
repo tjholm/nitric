@@ -44,14 +44,22 @@ type Api interface {
 	Fqn() *string
 	// Experimental.
 	FriendlyUniqueId() *string
+	Location() *string
+	SetLocation(val *string)
 	Name() *string
 	SetName(val *string)
 	// The tree node.
 	Node() constructs.Node
 	// Experimental.
 	Providers() *[]interface{}
+	PublisherEmail() *string
+	SetPublisherEmail(val *string)
+	PublisherName() *string
+	SetPublisherName(val *string)
 	// Experimental.
 	RawOverrides() interface{}
+	ResourceGroupName() *string
+	SetResourceGroupName(val *string)
 	// Experimental.
 	SkipAssetCreationFromLocalModules() *bool
 	// Experimental.
@@ -153,6 +161,16 @@ func (j *jsiiProxy_Api) FriendlyUniqueId() *string {
 	return returns
 }
 
+func (j *jsiiProxy_Api) Location() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"location",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Api) Name() *string {
 	var returns *string
 	_jsii_.Get(
@@ -183,11 +201,41 @@ func (j *jsiiProxy_Api) Providers() *[]interface{} {
 	return returns
 }
 
+func (j *jsiiProxy_Api) PublisherEmail() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"publisherEmail",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Api) PublisherName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"publisherName",
+		&returns,
+	)
+	return returns
+}
+
 func (j *jsiiProxy_Api) RawOverrides() interface{} {
 	var returns interface{}
 	_jsii_.Get(
 		j,
 		"rawOverrides",
+		&returns,
+	)
+	return returns
+}
+
+func (j *jsiiProxy_Api) ResourceGroupName() *string {
+	var returns *string
+	_jsii_.Get(
+		j,
+		"resourceGroupName",
 		&returns,
 	)
 	return returns
@@ -286,6 +334,17 @@ func (j *jsiiProxy_Api) SetForEach(val cdktf.ITerraformIterator) {
 	)
 }
 
+func (j *jsiiProxy_Api) SetLocation(val *string) {
+	if err := j.validateSetLocationParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"location",
+		val,
+	)
+}
+
 func (j *jsiiProxy_Api) SetName(val *string) {
 	if err := j.validateSetNameParameters(val); err != nil {
 		panic(err)
@@ -293,6 +352,39 @@ func (j *jsiiProxy_Api) SetName(val *string) {
 	_jsii_.Set(
 		j,
 		"name",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Api) SetPublisherEmail(val *string) {
+	if err := j.validateSetPublisherEmailParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"publisherEmail",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Api) SetPublisherName(val *string) {
+	if err := j.validateSetPublisherNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"publisherName",
+		val,
+	)
+}
+
+func (j *jsiiProxy_Api) SetResourceGroupName(val *string) {
+	if err := j.validateSetResourceGroupNameParameters(val); err != nil {
+		panic(err)
+	}
+	_jsii_.Set(
+		j,
+		"resourceGroupName",
 		val,
 	)
 }

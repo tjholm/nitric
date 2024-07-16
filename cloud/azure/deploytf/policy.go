@@ -23,5 +23,5 @@ import (
 
 // Policy - Deploy a Policy
 func (a *NitricAzureTerraformProvider) Policy(stack cdktf.TerraformStack, name string, config *deploymentspb.Policy) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("policies not implemented")
 }

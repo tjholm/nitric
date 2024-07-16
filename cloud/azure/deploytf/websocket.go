@@ -23,5 +23,5 @@ import (
 
 // Websocket - Deploy a Websocket Gateway
 func (a *NitricAzureTerraformProvider) Websocket(stack cdktf.TerraformStack, name string, config *deploymentspb.Websocket) error {
-	return fmt.Errorf("Not implemented")
+	return fmt.Errorf("websockets not implemented")
 }
