@@ -24,8 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 type StorageClient interface {
 	// Retrieve an item from a bucket
 	Read(ctx context.Context, in *StorageReadRequest, opts ...grpc.CallOption) (*StorageReadResponse, error)
+	// Read an item from a bucket as a stream
+	ReadStream(ctx context.Context, in *StorageReadRequest, opts ...grpc.CallOption) (Storage_ReadStreamClient, error)
 	// Store an item to a bucket
 	Write(ctx context.Context, in *StorageWriteRequest, opts ...grpc.CallOption) (*StorageWriteResponse, error)
+	// Read an item from a bucket as a stream
+	WriteStream(ctx context.Context, opts ...grpc.CallOption) (Storage_WriteStreamClient, error)
 	// Delete an item from a bucket
 	Delete(ctx context.Context, in *StorageDeleteRequest, opts ...grpc.CallOption) (*StorageDeleteResponse, error)
 	// Generate a pre-signed URL for direct operations on an item
@@ -53,6 +57,38 @@ func (c *storageClient) Read(ctx context.Context, in *StorageReadRequest, opts .
 	return out, nil
 }
 
+func (c *storageClient) ReadStream(ctx context.Context, in *StorageReadRequest, opts ...grpc.CallOption) (Storage_ReadStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Storage_ServiceDesc.Streams[0], "/nitric.proto.storage.v1.Storage/ReadStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &storageReadStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Storage_ReadStreamClient interface {
+	Recv() (*StorageReadResponse, error)
+	grpc.ClientStream
+}
+
+type storageReadStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *storageReadStreamClient) Recv() (*StorageReadResponse, error) {
+	m := new(StorageReadResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *storageClient) Write(ctx context.Context, in *StorageWriteRequest, opts ...grpc.CallOption) (*StorageWriteResponse, error) {
 	out := new(StorageWriteResponse)
 	err := c.cc.Invoke(ctx, "/nitric.proto.storage.v1.Storage/Write", in, out, opts...)
@@ -60,6 +96,40 @@ func (c *storageClient) Write(ctx context.Context, in *StorageWriteRequest, opts
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *storageClient) WriteStream(ctx context.Context, opts ...grpc.CallOption) (Storage_WriteStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Storage_ServiceDesc.Streams[1], "/nitric.proto.storage.v1.Storage/WriteStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &storageWriteStreamClient{stream}
+	return x, nil
+}
+
+type Storage_WriteStreamClient interface {
+	Send(*StorageWriteRequest) error
+	CloseAndRecv() (*StorageWriteResponse, error)
+	grpc.ClientStream
+}
+
+type storageWriteStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *storageWriteStreamClient) Send(m *StorageWriteRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *storageWriteStreamClient) CloseAndRecv() (*StorageWriteResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(StorageWriteResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *storageClient) Delete(ctx context.Context, in *StorageDeleteRequest, opts ...grpc.CallOption) (*StorageDeleteResponse, error) {
@@ -104,8 +174,12 @@ func (c *storageClient) Exists(ctx context.Context, in *StorageExistsRequest, op
 type StorageServer interface {
 	// Retrieve an item from a bucket
 	Read(context.Context, *StorageReadRequest) (*StorageReadResponse, error)
+	// Read an item from a bucket as a stream
+	ReadStream(*StorageReadRequest, Storage_ReadStreamServer) error
 	// Store an item to a bucket
 	Write(context.Context, *StorageWriteRequest) (*StorageWriteResponse, error)
+	// Read an item from a bucket as a stream
+	WriteStream(Storage_WriteStreamServer) error
 	// Delete an item from a bucket
 	Delete(context.Context, *StorageDeleteRequest) (*StorageDeleteResponse, error)
 	// Generate a pre-signed URL for direct operations on an item
@@ -123,8 +197,14 @@ type UnimplementedStorageServer struct {
 func (UnimplementedStorageServer) Read(context.Context, *StorageReadRequest) (*StorageReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
+func (UnimplementedStorageServer) ReadStream(*StorageReadRequest, Storage_ReadStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ReadStream not implemented")
+}
 func (UnimplementedStorageServer) Write(context.Context, *StorageWriteRequest) (*StorageWriteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Write not implemented")
+}
+func (UnimplementedStorageServer) WriteStream(Storage_WriteStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method WriteStream not implemented")
 }
 func (UnimplementedStorageServer) Delete(context.Context, *StorageDeleteRequest) (*StorageDeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
@@ -168,6 +248,27 @@ func _Storage_Read_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Storage_ReadStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StorageReadRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(StorageServer).ReadStream(m, &storageReadStreamServer{stream})
+}
+
+type Storage_ReadStreamServer interface {
+	Send(*StorageReadResponse) error
+	grpc.ServerStream
+}
+
+type storageReadStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *storageReadStreamServer) Send(m *StorageReadResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _Storage_Write_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StorageWriteRequest)
 	if err := dec(in); err != nil {
@@ -184,6 +285,32 @@ func _Storage_Write_Handler(srv interface{}, ctx context.Context, dec func(inter
 		return srv.(StorageServer).Write(ctx, req.(*StorageWriteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _Storage_WriteStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(StorageServer).WriteStream(&storageWriteStreamServer{stream})
+}
+
+type Storage_WriteStreamServer interface {
+	SendAndClose(*StorageWriteResponse) error
+	Recv() (*StorageWriteRequest, error)
+	grpc.ServerStream
+}
+
+type storageWriteStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *storageWriteStreamServer) SendAndClose(m *StorageWriteResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *storageWriteStreamServer) Recv() (*StorageWriteRequest, error) {
+	m := new(StorageWriteRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _Storage_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -290,7 +417,18 @@ var Storage_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Storage_Exists_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ReadStream",
+			Handler:       _Storage_ReadStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "WriteStream",
+			Handler:       _Storage_WriteStream_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "nitric/proto/storage/v1/storage.proto",
 }
 
