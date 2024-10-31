@@ -30,26 +30,19 @@ import (
 	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/ecr"
 	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/iam"
 	awsec2 "github.com/pulumi/pulumi-aws/sdk/v6/go/aws/ec2"
+	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/efs"
 )
-
-type ResourceRequirement struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
-}
-
-type EnvironmentVariable struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
 
 func (a *NitricAwsPulumiProvider) batch(ctx *pulumi.Context) error {
 	var subnets pulumi.StringArrayOutput
+	// var privateSubnets pulumi.StringArrayOutput
 	var vpcId pulumi.StringOutput
 	var err error
 
 	if a.Vpc != nil {
 		allSubnets := allVpcSubnetIds(a.Vpc)
 
+		// privateSubnets = a.Vpc.PrivateSubnetIds
 		subnets = allSubnets
 		vpcId = a.Vpc.VpcId
 	} else {
@@ -58,12 +51,21 @@ func (a *NitricAwsPulumiProvider) batch(ctx *pulumi.Context) error {
 			return fmt.Errorf("could not resolve default VPC")
 		}
 
-		subnets = vpc.PublicSubnetIds
+		// privateSubnets = vpc.PrivateSubnetIds
+		subnets = allDefaultVpcSubnetIds(vpc)
 		vpcId = vpc.VpcId
 	}
 
 	a.BatchSecurityGroup, err = awsec2.NewSecurityGroup(ctx, "batch-sg", &awsec2.SecurityGroupArgs{
 		VpcId: vpcId,
+		Ingress: awsec2.SecurityGroupIngressArray{
+			awsec2.SecurityGroupIngressArgs{
+				Protocol: pulumi.String("tcp"),
+				FromPort: pulumi.Int(2049),
+				ToPort:   pulumi.Int(2049),
+				Self:     pulumi.Bool(true),
+			},
+		},
 		Egress: awsec2.SecurityGroupEgressArray{
 			awsec2.SecurityGroupEgressArgs{
 				Protocol: pulumi.String("-1"),
@@ -138,6 +140,8 @@ func (a *NitricAwsPulumiProvider) batch(ctx *pulumi.Context) error {
 		return err
 	}
 
+	// deploy an EFS volume for the batch jobs
+
 	computeResourceOptions := &batch.ComputeEnvironmentComputeResourcesArgs{
 		MinVcpus:         pulumi.Int(a.AwsConfig.BatchComputeEnvConfig.MinCpus),
 		MaxVcpus:         pulumi.Int(a.AwsConfig.BatchComputeEnvConfig.MaxCpus),
@@ -174,6 +178,21 @@ func (a *NitricAwsPulumiProvider) batch(ctx *pulumi.Context) error {
 		}
 	}
 
+	a.sharedStorage, err = efs.NewFileSystem(ctx, "batch-efs", &efs.FileSystemArgs{})
+	if err != nil {
+		return err
+	}
+
+	// create mount points that match the compute environment subnets
+	// _, err = efs.NewMountTarget(ctx, "batch-efs-mount", &efs.MountTargetArgs{
+	// 	FileSystemId: a.sharedStorage.ID(),
+	// 	// OneZone EFS mount
+	// 	SubnetId: privateSubnets.Index(pulumi.Int(0)),
+	// 	SecurityGroups: pulumi.StringArray{
+	// 		a.BatchSecurityGroup.ID(),
+	// 	},
+	// })
+
 	a.ComputeEnvironment, err = batch.NewComputeEnvironment(ctx, "compute-environment", &batch.ComputeEnvironmentArgs{
 		ComputeEnvironmentName: pulumi.Sprintf("%s-compute-environment", a.StackId),
 		ComputeResources:       computeResourceOptions,
@@ -199,7 +218,44 @@ func (a *NitricAwsPulumiProvider) batch(ctx *pulumi.Context) error {
 	return nil
 }
 
-// Docs: https://docs.aws.amazon.com/batch/latest/userguide/job_definition_parameters.html
+type ResourceRequirement struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+type EnvironmentVariable struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+//	type VolumeHost struct {
+//		SourcePath string `json:"sourcePath,omitempty"`
+//	}
+
+type AuthorizationConfig struct {
+	AccessPointId string `json:"accessPointId,omitempty"`
+	Iam           string `json:"iam,omitempty"`
+}
+type EfsVolumeConfiguration struct {
+	FileSystemId          string              `json:"fileSystemId,omitempty"`
+	RootDirectory         string              `json:"rootDirectory,omitempty"`
+	TransitEncryption     string              `json:"transitEncryption,omitempty"`
+	TransitEncryptionPort int                 `json:"transitEncryptionPort,omitempty"`
+	AuthorizationConfig   AuthorizationConfig `json:"authorizationConfig,omitempty"`
+}
+
+type Volume struct {
+	Name                   string                 `json:"name,omitempty"`
+	EfsVolumeConfiguration EfsVolumeConfiguration `json:"efsVolumeConfiguration,omitempty"`
+}
+
+type MountPoint struct {
+	ContainerPath string `json:"containerPath,omitempty"`
+	ReadOnly      bool   `json:"readOnly,omitempty"`
+	SourceVolume  string `json:"sourceVolume,omitempty"`
+}
+
+// Docs: https://docs.aws.amazon.com/batch/latest/userguide/job-definition-template.html
 type JobDefinitionContainerProperties struct {
 	Image                string                `json:"image"`
 	ResourceRequirements []ResourceRequirement `json:"resourceRequirements"`
@@ -207,6 +263,8 @@ type JobDefinitionContainerProperties struct {
 	JobRoleArn           string                `json:"jobRoleArn"`
 	ExecutionRoleArn     string                `json:"executionRoleArn"`
 	Environment          []EnvironmentVariable `json:"environment"`
+	Volumes              []Volume              `json:"volumes"`
+	MountPoints          []MountPoint          `json:"mountPoints"`
 }
 
 func (p *NitricAwsPulumiProvider) Batch(ctx *pulumi.Context, parent pulumi.Resource, name string, config *deploymentspb.Batch, runtime provider.RuntimeProvider) error {
@@ -257,6 +315,8 @@ func (p *NitricAwsPulumiProvider) Batch(ctx *pulumi.Context, parent pulumi.Resou
 		"s3:ListAllMyBuckets",
 		"tag:GetResources",
 		"apigateway:GET",
+		"elasticfilesystem:ClientMount",
+		"elasticfilesystem:ClientWrite",
 	}
 
 	// This is a tag key unique to this instance of the deployed stack.
@@ -314,11 +374,12 @@ func (p *NitricAwsPulumiProvider) Batch(ctx *pulumi.Context, parent pulumi.Resou
 			job.Requirements.Memory = 512
 		}
 
-		containerProperties := pulumi.All(wrappedImage.URI(), p.BatchRoles[name].Arn, dbEndpoint, dbPassword).ApplyT(func(args []interface{}) (string, error) {
+		containerProperties := pulumi.All(wrappedImage.URI(), p.BatchRoles[name].Arn, dbEndpoint, dbPassword, p.sharedStorage.ID().ToStringOutput()).ApplyT(func(args []interface{}) (string, error) {
 			imageName := args[0].(string)
 			jobRoleArn := args[1].(string)
 			nitricDbEndpoint := args[2].(string)
 			nitricDbPassword := args[3].(string)
+			sharedStorageId := args[4].(string)
 
 			jobDefinitionContainerProperties := JobDefinitionContainerProperties{
 				Image: imageName,
@@ -351,6 +412,24 @@ func (p *NitricAwsPulumiProvider) Batch(ctx *pulumi.Context, parent pulumi.Resou
 					},
 				},
 				JobRoleArn: jobRoleArn,
+				Volumes: []Volume{
+					{
+						Name: "efsVolume",
+						EfsVolumeConfiguration: EfsVolumeConfiguration{
+							FileSystemId:  sharedStorageId,
+							RootDirectory: "/mnt/efs",
+						},
+						// Host: VolumeHost{
+						// 	SourcePath: sharedStorageId,
+						// },
+					},
+				},
+				MountPoints: []MountPoint{
+					{
+						ContainerPath: "/mnt/efs",
+						SourceVolume:  "efsVolume",
+					},
+				},
 			}
 
 			if nitricDbEndpoint != "" {

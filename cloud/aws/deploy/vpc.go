@@ -88,6 +88,19 @@ func (a *NitricAwsPulumiProvider) vpc(ctx *pulumi.Context) error {
 	return nil
 }
 
+func allDefaultVpcSubnetIds(vpc *ec2.DefaultVpc) pulumi.StringArrayOutput {
+	return pulumi.All(vpc.PrivateSubnetIds, vpc.PublicSubnetIds).ApplyT(func(args []interface{}) []string {
+		subnets := []string{}
+		privateSubnets := args[0].([]string)
+		publicSubnets := args[1].([]string)
+
+		subnets = append(subnets, privateSubnets...)
+		subnets = append(subnets, publicSubnets...)
+
+		return subnets
+	}).(pulumi.StringArrayOutput)
+}
+
 func allVpcSubnetIds(vpc *ec2.Vpc) pulumi.StringArrayOutput {
 	return pulumi.All(vpc.PrivateSubnetIds, vpc.PublicSubnetIds).ApplyT(func(args []interface{}) []string {
 		subnets := []string{}

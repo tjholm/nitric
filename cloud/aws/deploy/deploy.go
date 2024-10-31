@@ -47,6 +47,7 @@ import (
 	"github.com/pulumi/pulumi-aws/sdk/v5/go/aws/sqs"
 	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/codebuild"
 	awsec2 "github.com/pulumi/pulumi-aws/sdk/v6/go/aws/ec2"
+	"github.com/pulumi/pulumi-aws/sdk/v6/go/aws/efs"
 	"github.com/pulumi/pulumi-awsx/sdk/go/awsx/ec2"
 	"github.com/pulumi/pulumi-docker/sdk/v4/go/docker"
 	"github.com/pulumi/pulumi-random/sdk/v4/go/random"
@@ -74,6 +75,7 @@ type NitricAwsPulumiProvider struct {
 	ComputeEnvironment *batch.ComputeEnvironment
 	JobQueue           *batch.JobQueue
 	ResourceGroup      *resourcegroups.Group
+	sharedStorage      *efs.FileSystem
 	// A codebuild job for creating the requested databases for a single database cluster
 	DbMasterPassword      *random.RandomPassword
 	CreateDatabaseProject *codebuild.Project
