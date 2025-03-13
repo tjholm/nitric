@@ -20,23 +20,42 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/nitrictech/nitric/cloud/gcp/deploy/embeds"
 	deploymentspb "github.com/nitrictech/nitric/core/pkg/proto/deployments/v1"
 	"github.com/pulumi/pulumi-command/sdk/go/command/local"
 	"github.com/pulumi/pulumi-gcp/sdk/v8/go/gcp/firebase"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func getAccessToken() {
+func getAccessToken() string {
 
 }
 
-func createHostingSiteVersion(ctx *pulumi.Context) error {
+func createHostingSiteVersion(ctx *pulumi.Context, siteId pulumi.StringOutput) error {
 	// Use curl to create a new version of the firebase hosting website
 	// TODO: This would be much better as a custom provider
+
+	createSiteVersionScript := siteId.ApplyT(func(siteId string) (string, error) {
+		return embeds.CreateSiteVersion(embeds.CreateSiteVersionScriptArgs{
+			SiteId: siteId,
+		})
+	}).(pulumi.StringOutput)
+
+	deleteSiteVersionScript, err := embeds.DeleteSiteVersion(embeds.DeleteSiteVersionScriptArgs{})
+	if err != nil {
+		return err
+	}
+
 	createVersionCmd, err := local.NewCommand(ctx, "createVersion", &local.CommandArgs{
 		Dir:    pulumi.String("website"),
-		Create: pulumi.String("curl -X POST -H \"Content-Type: application/json\" -d '{\"version\": {\"status\": \"CREATED\"}}' https://firebasehosting.googleapis.com/v1beta1/sites/$PROJECT_ID/versions"),
-		Delete: pulumi.String("curl -X DELETE https://firebasehosting.googleapis.com/v1beta1/sites/$PROJECT_ID/versions/$VERSION_ID"),
+		Create: createSiteVersionScript,
+		Delete: pulumi.String(deleteSiteVersionScript),
+		Environment: pulumi.ToStringMap(
+			map[string]string{
+				"ACCESS_TOKEN": getAccessToken(),
+			},
+		),
+		Triggers: pulumi.ToArray([]interface{}{}),
 	})
 	if err != nil {
 		return err
@@ -61,8 +80,6 @@ func createHostingSiteVersion(ctx *pulumi.Context) error {
 	populateFilesCmd, err := local.NewCommand(ctx, "populateFiles", &local.CommandArgs{
 		Dir:    pulumi.String("website"),
 		Create: pulumi.String("curl"),
-		// We may not need a delete command here
-		// Delete: pulumi.String("curl -X DELETE https://firebasehosting.googleapis.com/v1beta1/sites/$PROJECT_ID/versions/$VERSION_ID/files"),
 	})
 	if err != nil {
 		return err
@@ -70,7 +87,6 @@ func createHostingSiteVersion(ctx *pulumi.Context) error {
 
 	// Walk the websites structure and create gzips of each file and a sha256 hash of each gzip
 	// Then send the hashes as a map to the populateFiles endpoint for the created version
-
 	finalizeVersionCmd, err := local.NewCommand(ctx, "finalizeVersion", &local.CommandArgs{
 		Dir:    pulumi.String("website"),
 		Create: pulumi.String("curl"),
