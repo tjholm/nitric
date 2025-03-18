@@ -36,16 +36,6 @@
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "enum": ["Wasm"],
-                                        "description": "WebAssembly runtime configuration."
-                                    }
-                                },
-                                "required": ["type"]
-                            },
-                            {
-                                "properties": {
-                                    "type": {
-                                        "type": "string",
                                         "enum": ["Docker"],
                                         "description": "Docker runtime configuration."
                                     },
@@ -129,7 +119,7 @@
                                             "type": "string",
                                             "description": "The name of the bucket to use"
                                         },
-                                        "resource": {
+                                        "type": {
                                             "type": "string",
                                             "enum": ["bucket"],
                                             "description": "Static bucket type"
@@ -143,7 +133,7 @@
                                             }
                                         }
                                     },
-                                    "required": ["name", "resource", "permissions"]
+                                    "required": ["name", "type", "permissions"]
                                 },
                                 {
                                     "type": "object",
@@ -152,7 +142,7 @@
                                             "type": "string",
                                             "description": "The name of the topic to use"
                                         },
-                                        "resource": {
+                                        "type": {
                                             "type": "string",
                                             "enum": ["topic"],
                                             "description": "Static topic type"
@@ -166,7 +156,7 @@
                                             }
                                         }
                                     },
-                                    "required": ["name", "resource", "permissions"]
+                                    "required": ["name", "type", "permissions"]
                                 },
                                 {
                                     "type": "object",
@@ -175,13 +165,13 @@
                                             "type": "string",
                                             "description": "The name of the topic to use"
                                         },
-                                        "resource": {
+                                        "type": {
                                             "type": "string",
                                             "enum": ["database"],
                                             "description": "Static database type"
                                         }
                                     },
-                                    "required": ["name", "resource"]
+                                    "required": ["name", "type"]
                                 }
                             ],
                             "required": ["resource", "permissions"]
