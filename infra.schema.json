@@ -1,0 +1,228 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Nitric Infrastructure Schema",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the Nitric project."
+        },
+        "apps": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the application."
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["serverless", "container"],
+                        "description": "The type of the application."
+                    },
+                    "lang": {
+                        "type": "string",
+                        "description": "The programming language used by the application."
+                    },
+                    "port": {
+                        "type": "integer",
+                        "description": "The port the application listens on."
+                    },
+                    "runtime": {
+                        "type": "object",
+                        "oneOf": [
+                            {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": ["Wasm"],
+                                        "description": "WebAssembly runtime configuration."
+                                    }
+                                },
+                                "required": ["type"]
+                            },
+                            {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": ["Docker"],
+                                        "description": "Docker runtime configuration."
+                                    },
+                                    "dockerfile": {
+                                        "type": "string",
+                                        "description": "Path to the Dockerfile."
+                                    }
+                                },
+                                "required": ["type", "dockerfile"]
+                            }
+                        ]
+                    },
+                    "watches": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The name of the bucket to use"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["bucket"],
+                                            "description": "Static bucket type"
+                                        },
+                                        "prefix": {
+                                            "type": "string",
+                                            "description": "The prefix to watch for changes."
+                                        }
+                                    },
+                                    "required": ["name", "type"]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The name of the bucket to use"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["topic"],
+                                            "description": "Static topic type"
+                                        }
+                                    },
+                                    "required": ["name", "type"]
+                                }
+                            ]
+                        }
+                    },
+                    "cron": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "schedule": {
+                                    "type": "string",
+                                    "description": "The cron schedule."
+                                },
+                                "endpoint": {
+                                    "type": "string",
+                                    "description": "The endpoint triggered by the cron job."
+                                }
+                            },
+                            "required": ["schedule", "endpoint"]
+                        }
+                    },
+                    "uses": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The name of the bucket to use"
+                                        },
+                                        "resource": {
+                                            "type": "string",
+                                            "enum": ["bucket"],
+                                            "description": "Static bucket type"
+                                        },
+                                        "permissions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": ["read", "write", "delete"],
+                                                "description": "Permissions granted for the resource."
+                                            }
+                                        }
+                                    },
+                                    "required": ["name", "resource", "permissions"]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The name of the topic to use"
+                                        },
+                                        "resource": {
+                                            "type": "string",
+                                            "enum": ["topic"],
+                                            "description": "Static topic type"
+                                        },
+                                        "permissions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": ["publish"],
+                                                "description": "Permissions granted for the resource."
+                                            }
+                                        }
+                                    },
+                                    "required": ["name", "resource", "permissions"]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "description": "The name of the topic to use"
+                                        },
+                                        "resource": {
+                                            "type": "string",
+                                            "enum": ["database"],
+                                            "description": "Static database type"
+                                        }
+                                    },
+                                    "required": ["name", "resource"]
+                                }
+                            ],
+                            "required": ["resource", "permissions"]
+                        }
+                    }
+                },
+                "required": ["name", "type", "lang", "port", "runtime"]
+            }
+        },
+        "resources": {
+            "type": "object",
+            "properties": {
+                "buckets": {
+                    "type": "object",
+                    "description": "A map of bucket names to their configurations.",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
+                    }
+                },
+                "topics": {
+                    "type": "object",
+                    "description": "A map of topic names to their configurations.",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
+                    }
+                },
+                "databases": {
+                    "type": "object",
+                    "description": "A map of database names to their configurations.",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
+                    }
+                }
+            }
+        }
+    },
+    "required": []
+}
