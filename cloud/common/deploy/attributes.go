@@ -21,6 +21,7 @@ type CommonStackDetails struct {
 	FullStackName string
 	StackName     string
 	Region        string
+	Tags          map[string]string
 }
 
 // Read nitric attributes from the provided deployment attributes
@@ -45,6 +46,12 @@ func CommonStackDetailsFromAttributes(attributes map[string]interface{}) (*Commo
 		// need a valid stack name
 		return nil, fmt.Errorf("region is not set or invalid")
 	}
+
+	tags, hasTags := attributes["tags"].(map[string]string)
+	if !hasTags {
+		tags = map[string]string{}
+	}
+
 	// Backwards compatible stack name
 	// The existing providers in the CLI
 	// Use the combined project and stack name
@@ -55,5 +62,6 @@ func CommonStackDetailsFromAttributes(attributes map[string]interface{}) (*Commo
 		FullStackName: fullStackName,
 		Region:        region,
 		StackName:     stack,
+		Tags:          tags,
 	}, nil
 }
