@@ -23,7 +23,7 @@ import (
 	"github.com/nitrictech/nitric/cloud/aws/runtime/resource"
 	"github.com/nitrictech/nitric/cloud/aws/runtime/secret"
 	sql_service "github.com/nitrictech/nitric/cloud/aws/runtime/sql"
-	aws_storage "github.com/nitrictech/nitric/cloud/aws/runtime/storage"
+	"github.com/nitrictech/nitric/cloud/aws/runtime/storagewasm"
 	"github.com/nitrictech/nitric/cloud/aws/runtime/topic"
 	"github.com/nitrictech/nitric/cloud/aws/runtime/websocket"
 	"github.com/nitrictech/nitric/cloud/common/runtime/env"
@@ -36,7 +36,7 @@ func NewAwsRuntimeServer(resolver resource.AwsResourceResolver, opts ...server.S
 	secretPlugin, _ := secret.New(resolver)
 	keyValuePlugin, _ := keyvalue.New(resolver)
 	topicsPlugin, _ := topic.New(resolver)
-	storagePlugin, _ := aws_storage.New(resolver)
+	storagePlugin, _ := storagewasm.New(resolver)
 	batchPlugin, _ := batch.New()
 
 	websocketPlugin, _ := websocket.NewAwsApiGatewayWebsocket(resolver)

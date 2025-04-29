@@ -26,3 +26,6 @@ var GATEWAY_ENVIRONMENT = env.GetEnv("GATEWAY_ENVIRONMENT", "lambda")
 var JOB_QUEUE_ARN = env.GetEnv("NITRIC_JOB_QUEUE_ARN", "")
 
 var NITRIC_AWS_RESOURCE_RESOLVER = env.GetEnv("NITRIC_AWS_RESOURCE_RESOLVER", "ssm")
+
+// STORAGE_PLUGIN_PATH is the path to the WASM plugin for storage operations
+var STORAGE_PLUGIN_PATH = env.GetEnv("STORAGE_PLUGIN_PATH", "storage.wasm")

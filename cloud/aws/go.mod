@@ -59,7 +59,15 @@ require (
 	google.golang.org/protobuf v1.36.3
 )
 
-require github.com/aws/aws-sdk-go-v2/service/route53 v1.51.0 // indirect
+require (
+	github.com/aws/aws-sdk-go-v2/service/route53 v1.51.0 // indirect
+	github.com/dylibso/observe-sdk/go v0.0.0-20240819160327-2d926c5d788a // indirect
+	github.com/extism/go-sdk v1.7.1 // indirect
+	github.com/ianlancetaylor/demangle v0.0.0-20240805132620-81f5be970eca // indirect
+	github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834 // indirect
+	github.com/tetratelabs/wazero v1.9.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
+)
 
 require (
 	4d63.com/gocheckcompilerdirectives v1.2.1 // indirect
