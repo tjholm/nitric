@@ -7,16 +7,18 @@ type Resource struct {
 	SubType string `json:"sub-type,omitempty" yaml:"sub-type,omitempty"`
 
 	// A resource can contain oneof the following sets of keys (see JSONSchemaExtended)
-	*ServiceResource    `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
-	*BucketResource     `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
-	*EntrypointResource `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*ServiceResource      `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*BucketResource       `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*EntrypointResource   `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*SubscriptionResource `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
 }
 
 // schema types defined for the output schema
 var schemaTypes = map[string]interface{}{
-	"ServiceResource":    ServiceResource{},
-	"BucketResource":     BucketResource{},
-	"EntrypointResource": EntrypointResource{},
+	"ServiceResource":      ServiceResource{},
+	"BucketResource":       BucketResource{},
+	"EntrypointResource":   EntrypointResource{},
+	"SubscriptionResource": SubscriptionResource{},
 }
 
 func (Resource) JSONSchemaExtend(schema *jsonschema.Schema) {
