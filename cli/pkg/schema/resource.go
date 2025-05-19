@@ -3,28 +3,43 @@ package schema
 import "github.com/invopop/jsonschema"
 
 type Resource struct {
-	Type             string `json:"type" jsonschema:"-"`
-	*ServiceResource `json:",inline,omitempty" jsonschema:"-"`
-	*BucketResource  `json:",inline,omitempty" jsonschema:"-"`
+	Type    string `json:"type" yaml:"type" jsonschema:"-"`
+	SubType string `json:"sub-type,omitempty" yaml:"sub-type,omitempty"`
+
+	// A resource can contain oneof the following sets of keys (see JSONSchemaExtended)
+	*ServiceResource `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*BucketResource  `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+}
+
+// schema types defined for the output schema
+var schemaTypes = map[string]interface{}{
+	"ServiceResource": ServiceResource{},
+	"BucketResource":  BucketResource{},
 }
 
 func (Resource) JSONSchemaExtend(schema *jsonschema.Schema) {
-	serviceSchema := jsonschema.Reflect(ServiceResource{})
-	bucketSchema := jsonschema.Reflect(BucketResource{})
+	if schema.Definitions == nil {
+		schema.Definitions = map[string]*jsonschema.Schema{}
+	}
+
+	subSchemas := []*jsonschema.Schema{}
+	for _, res := range schemaTypes {
+		s := jsonschema.Reflect(res)
+
+		s.AdditionalProperties = nil
+		s.Properties = nil
+		// TODO: Make sure sub definitions are also collected
+		// subSchemas = append(subSchemas, s.Definitions[name])
+		subSchemas = append(subSchemas, s)
+
+		// for n, def := range s.Definitions {
+		// 	if n != name {
+		// 		schema.Definitions[n] = def
+		// 	}
+		// }
+	}
 
 	schema.Properties = nil
 	schema.AdditionalProperties = nil
-	schema.OneOf = []*jsonschema.Schema{serviceSchema.Definitions["ServiceResource"], bucketSchema.Definitions["BucketResource"]}
-}
-
-type ServiceResource struct {
-	Test string `json:"test"`
-	// Only used for schema generation, will always be nil. Do not use or remove.
-	SchemaOnlyServiceTypeHack string `json:"type" jsonschema:"type,enum=service"`
-}
-
-type BucketResource struct {
-	TestTwo string `json:"test-two"`
-	// Only used for schema generation, will always be nil. Do not use or remove.
-	SchemaOnlyBucketTypeHack string `json:"type" jsonschema:"type,enum=bucket"`
+	schema.OneOf = subSchemas
 }

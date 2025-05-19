@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	schema := jsonschema.Reflect(&schema.Schema{})
+	schema := jsonschema.Reflect(&schema.Application{})
 
 	jsonOutput, err := json.MarshalIndent(schema, "", "  ")
 	if err != nil {
