@@ -1,0 +1,12 @@
+{
+  "resources": {
+    "example1": {
+      "type": "service",
+      "test": "whatever"
+    },
+    "example2": {
+      "type": "bucket",
+      "test-two": "whatever"
+    }
+  }
+}
