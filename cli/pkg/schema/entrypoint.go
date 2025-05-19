@@ -14,6 +14,5 @@ type EntrypointResource struct {
 }
 
 type Route struct {
-	Type       string `json:"type" jsonschema:"enum=service,enum=bucket"`
 	TargetName string `json:"name"`
 }
