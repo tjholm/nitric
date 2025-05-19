@@ -7,14 +7,16 @@ type Resource struct {
 	SubType string `json:"sub-type,omitempty" yaml:"sub-type,omitempty"`
 
 	// A resource can contain oneof the following sets of keys (see JSONSchemaExtended)
-	*ServiceResource `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
-	*BucketResource  `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*ServiceResource    `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*BucketResource     `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
+	*EntrypointResource `json:",inline,omitempty" yaml:",inline,omitempty" jsonschema:"-"`
 }
 
 // schema types defined for the output schema
 var schemaTypes = map[string]interface{}{
-	"ServiceResource": ServiceResource{},
-	"BucketResource":  BucketResource{},
+	"ServiceResource":    ServiceResource{},
+	"BucketResource":     BucketResource{},
+	"EntrypointResource": EntrypointResource{},
 }
 
 func (Resource) JSONSchemaExtend(schema *jsonschema.Schema) {
@@ -28,15 +30,7 @@ func (Resource) JSONSchemaExtend(schema *jsonschema.Schema) {
 
 		s.AdditionalProperties = nil
 		s.Properties = nil
-		// TODO: Make sure sub definitions are also collected
-		// subSchemas = append(subSchemas, s.Definitions[name])
 		subSchemas = append(subSchemas, s)
-
-		// for n, def := range s.Definitions {
-		// 	if n != name {
-		// 		schema.Definitions[n] = def
-		// 	}
-		// }
 	}
 
 	schema.Properties = nil

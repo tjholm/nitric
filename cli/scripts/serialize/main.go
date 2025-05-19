@@ -54,9 +54,9 @@ func main() {
 
 	for _, res := range appConfig.Resources {
 		if res.Type == "service" {
-			fmt.Printf("%+v\n", res)
+			fmt.Printf("%+v\n", res.ServiceResource)
 		} else if res.Type == "bucket" {
-			fmt.Printf("%+v\n", res)
+			fmt.Printf("%+v\n", res.BucketResource)
 		}
 
 	}

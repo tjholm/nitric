@@ -19,6 +19,12 @@ resources:
         context: ./orders
       # image:
       #   id: test
+  ingress:
+    type: entrypoint
+    routes:
+      /:
+        type: service
+        name: orders
 
   # orders-lock:
   #   type: lock
