@@ -19,7 +19,14 @@ type TerraformEngine struct {
 }
 
 func resolvePlugin(pluginName string) (*schema.TerraformPluginManifest, error) {
-	return nil, fmt.Errorf("plugin %s not found", pluginName)
+	// return nil, fmt.Errorf("plugin %s not found", pluginName)
+
+	// just resolve a known plugin for now
+	return &schema.TerraformPluginManifest{
+		Deployment: schema.TerraformDeploymentModule{
+			Terraform: "terraform-aws-modules/s3-bucket/aws",
+		},
+	}, nil
 }
 
 func resolvePluginName(resource schema.TerraformPlatformResource, subtype string) (string, error) {
@@ -54,9 +61,9 @@ func (e *TerraformEngine) getPlatformResourceProperties() map[string]map[string]
 		propertyMappings[fmt.Sprintf("service.%s", subtype)] = subtype.Properties
 	}
 
-	propertyMappings["service"] = e.platform.Entrypoints.Properties
+	propertyMappings["entrypoint"] = e.platform.Entrypoints.Properties
 	for _, subtype := range e.platform.Entrypoints.Subtypes {
-		propertyMappings[fmt.Sprintf("service.%s", subtype)] = subtype.Properties
+		propertyMappings[fmt.Sprintf("entrypoint.%s", subtype)] = subtype.Properties
 	}
 
 	return propertyMappings
@@ -120,6 +127,8 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 	// 3. Map inputs and outputs from the platform and environment to the stack resources
 	resourceProperties := e.getPlatformResourceProperties()
 
+	fmt.Println("resourceProperties", resourceProperties)
+
 	for resourceName, resource := range application.Resources {
 		// get its plugin properties
 		pluginProperties := resourceProperties[resource.Type]
@@ -129,6 +138,7 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 
 		// for each property in the plugin, map it to its respective value
 		for property, value := range pluginProperties {
+			fmt.Println("setting resource", resourceName, property, value)
 			// If the property represents a token that needs to be mapped then do so
 			if token, ok := value.(string); ok {
 				if contents, ok := extractTokenContents(token); ok {
@@ -138,6 +148,8 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 					source := parts[0]
 
 					if source == "infra" {
+						fmt.Println("setting infra resource", parts)
+
 						refName := parts[1]
 						propertyName := parts[2]
 						// map the variable output to the infra resource
