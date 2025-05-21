@@ -8,8 +8,8 @@ type TerraformPlatform struct {
 }
 
 type BaseTerraformResource struct {
-	Plugin     string            `json:"plugin"`
-	Properties map[string]string `json:"properties"` // XXX: May need to be map[string]interface{}
+	Plugin     string                 `json:"plugin"`
+	Properties map[string]interface{} `json:"properties"` // XXX: May need to be map[string]interface{}
 }
 
 type TerraformPlatformResource struct {

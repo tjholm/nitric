@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"regexp"
+	"strings"
 
 	"github.com/aws/jsii-runtime-go"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
@@ -13,7 +15,7 @@ import (
 )
 
 type TerraformEngine struct {
-	platform schema.TerraformPlatform
+	platform *schema.TerraformPlatform
 }
 
 func resolvePlugin(pluginName string) (*schema.TerraformPluginManifest, error) {
@@ -44,6 +46,32 @@ func (e *TerraformEngine) getPlatformResourceForType(resourceType string) (schem
 	return schema.TerraformPlatformResource{}, fmt.Errorf("resource type %s not found", resourceType)
 }
 
+func (e *TerraformEngine) getPlatformResourceProperties() map[string]map[string]interface{} {
+	propertyMappings := map[string]map[string]interface{}{}
+
+	propertyMappings["service"] = e.platform.Services.Properties
+	for _, subtype := range e.platform.Services.Subtypes {
+		propertyMappings[fmt.Sprintf("service.%s", subtype)] = subtype.Properties
+	}
+
+	propertyMappings["service"] = e.platform.Entrypoints.Properties
+	for _, subtype := range e.platform.Entrypoints.Subtypes {
+		propertyMappings[fmt.Sprintf("service.%s", subtype)] = subtype.Properties
+	}
+
+	return propertyMappings
+}
+
+// extractTokenContents extracts the contents between ${} from a token string
+func extractTokenContents(token string) (string, bool) {
+	if matches := tokenPattern.FindStringSubmatch(token); len(matches) == 2 {
+		return matches[1], true
+	}
+	return "", false
+}
+
+var tokenPattern = regexp.MustCompile(`^\${([^}]+)}$`)
+
 // Apply the engine to the target environment
 func (e *TerraformEngine) Apply(application *coreschema.Application, environment map[string]interface{}) error {
 	app := cdktf.NewApp(&cdktf.AppConfig{})
@@ -51,9 +79,6 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 	stack := cdktf.NewTerraformStack(app, jsii.String(application.Name))
 	terraformResources := map[string]cdktf.TerraformHclModule{}
 	terraformInfraResources := map[string]cdktf.TerraformHclModule{}
-
-	resolvableResourceProperties := map[string]map[string]interface{}{}
-	resolvableInfraProperties := map[string]map[string]interface{}{}
 
 	// 1. Start deploying the platform
 	for resourceName, resource := range application.Resources {
@@ -93,6 +118,49 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 	}
 
 	// 3. Map inputs and outputs from the platform and environment to the stack resources
+	resourceProperties := e.getPlatformResourceProperties()
+
+	for resourceName, resource := range application.Resources {
+		// get its plugin properties
+		pluginProperties := resourceProperties[resource.Type]
+		if resource.SubType != "" {
+			pluginProperties = resourceProperties[fmt.Sprintf("%s.%s", resource.Type, resource.SubType)]
+		}
+
+		// for each property in the plugin, map it to its respective value
+		for property, value := range pluginProperties {
+			// If the property represents a token that needs to be mapped then do so
+			if token, ok := value.(string); ok {
+				if contents, ok := extractTokenContents(token); ok {
+					// The contents can be processed by the caller by splitting on '.'
+					// For example: "infra.vpc.id" or "stage.variable_name"
+					parts := strings.Split(contents, ".")
+					source := parts[0]
+
+					if source == "infra" {
+						refName := parts[1]
+						propertyName := parts[2]
+						// map the variable output to the infra resource
+						refProperty := terraformInfraResources[refName].Get(jsii.String(propertyName))
+
+						terraformResources[resourceName].Set(jsii.String(property), refProperty)
+					} else if source == "stage" {
+						// TODO: Implement stage variable mapping
+					} else {
+						return fmt.Errorf("unknown variable mapping")
+						// Invalid variable mapping for now
+					}
+
+					_ = parts // TODO: Handle the token parts based on your needs
+				}
+
+				continue
+			}
+
+			// otherwise, just set the value
+			terraformResources[resourceName].Set(jsii.String(property), value)
+		}
+	}
 
 	app.Synth()
 
