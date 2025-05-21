@@ -15,19 +15,20 @@ import (
 )
 
 type TerraformEngine struct {
-	platform *schema.TerraformPlatform
+	platform   *schema.TerraformPlatform
+	repository TerraformPluginRepository
 }
 
-func resolvePlugin(pluginName string) (*schema.TerraformPluginManifest, error) {
-	// return nil, fmt.Errorf("plugin %s not found", pluginName)
+// func resolvePlugin(pluginName string) (*schema.TerraformPluginManifest, error) {
+// 	// return nil, fmt.Errorf("plugin %s not found", pluginName)
 
-	// just resolve a known plugin for now
-	return &schema.TerraformPluginManifest{
-		Deployment: schema.TerraformDeploymentModule{
-			Terraform: "terraform-aws-modules/s3-bucket/aws",
-		},
-	}, nil
-}
+// 	// just resolve a known plugin for now
+// 	return &schema.TerraformPluginManifest{
+// 		Deployment: schema.TerraformDeploymentModule{
+// 			Terraform: "terraform-aws-modules/s3-bucket/aws",
+// 		},
+// 	}, nil
+// }
 
 func resolvePluginName(resource schema.TerraformPlatformResource, subtype string) (string, error) {
 	plugin := resource.Plugin
@@ -99,7 +100,7 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 			return err
 		}
 
-		plugin, err := resolvePlugin(pluginName)
+		plugin, err := e.repository.GetPlugin(pluginName)
 		if err != nil {
 			return err
 		}
@@ -113,7 +114,7 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 	// 2. Deploy platform infra resources
 	for infraName, infra := range e.platform.Infra {
 		// Locate the plugin for the infra from platform
-		plugin, err := resolvePlugin(infra.Plugin)
+		plugin, err := e.repository.GetPlugin(infra.Plugin)
 		if err != nil {
 			return err
 		}
@@ -181,12 +182,26 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 
 var _ engines.Engine = &TerraformEngine{}
 
-func New(platformFile io.Reader) *TerraformEngine {
+type terraformEngineOption func(*TerraformEngine)
+
+func WithRepository(repository TerraformPluginRepository) terraformEngineOption {
+	return func(engine *TerraformEngine) {
+		engine.repository = repository
+	}
+}
+
+func New(platformFile io.Reader, opts ...terraformEngineOption) *TerraformEngine {
 	platform := &schema.TerraformPlatform{}
 
 	json.NewDecoder(platformFile).Decode(platform)
 
-	return &TerraformEngine{
+	engine := &TerraformEngine{
 		platform: platform,
 	}
+
+	for _, opt := range opts {
+		opt(engine)
+	}
+
+	return engine
 }
