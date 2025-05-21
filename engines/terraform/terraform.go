@@ -19,17 +19,6 @@ type TerraformEngine struct {
 	repository TerraformPluginRepository
 }
 
-// func resolvePlugin(pluginName string) (*schema.TerraformPluginManifest, error) {
-// 	// return nil, fmt.Errorf("plugin %s not found", pluginName)
-
-// 	// just resolve a known plugin for now
-// 	return &schema.TerraformPluginManifest{
-// 		Deployment: schema.TerraformDeploymentModule{
-// 			Terraform: "terraform-aws-modules/s3-bucket/aws",
-// 		},
-// 	}, nil
-// }
-
 func resolvePluginName(resource schema.TerraformPlatformResource, subtype string) (string, error) {
 	plugin := resource.Plugin
 	if subtype != "" {
@@ -81,7 +70,7 @@ func extractTokenContents(token string) (string, bool) {
 var tokenPattern = regexp.MustCompile(`^\${([^}]+)}$`)
 
 // Apply the engine to the target environment
-func (e *TerraformEngine) Apply(application *coreschema.Application, environment map[string]interface{}) error {
+func (e *TerraformEngine) Apply(application *coreschema.Application, stage map[string]interface{}) error {
 	app := cdktf.NewApp(&cdktf.AppConfig{})
 
 	stack := cdktf.NewTerraformStack(app, jsii.String(application.Name))
@@ -158,7 +147,8 @@ func (e *TerraformEngine) Apply(application *coreschema.Application, environment
 
 						terraformResources[resourceName].Set(jsii.String(property), refProperty)
 					} else if source == "stage" {
-						// TODO: Implement stage variable mapping
+						propertyName := parts[1]
+						terraformResources[resourceName].Set(jsii.String(property), stage[propertyName])
 					} else {
 						return fmt.Errorf("unknown variable mapping")
 						// Invalid variable mapping for now

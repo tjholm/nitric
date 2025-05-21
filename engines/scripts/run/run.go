@@ -50,7 +50,9 @@ func main() {
 			BaseTerraformResource: schema.BaseTerraformResource{
 				Plugin: "nitric-aws-lambda",
 				Properties: map[string]interface{}{
-					"test": "${infra.vpc.id}",
+					"vpc_security_group_ids": "${infra.vpc.default_security_group_id}",
+					"vpc_subnet_ids":         "${infra.vpc.infra_subnets}",
+					"timeout":                "${stage.lambda_timeout}",
 				},
 			},
 		},
@@ -88,9 +90,22 @@ func main() {
 		Resources: map[string]coreschema.Resource{
 			"service": {
 				Type: "service",
+				ServiceResource: &coreschema.ServiceResource{
+					Port: 8080,
+					Env: map[string]string{
+						"TEST": "test",
+					},
+					Container: coreschema.Container{
+						Image: &coreschema.DockerImage{
+							ID: "test",
+						},
+					},
+				},
 			},
 		},
-	}, map[string]interface{}{})
+	}, map[string]interface{}{
+		"lambda_timeout": 30,
+	})
 
 	if err != nil {
 		log.Fatalf("failed to apply platform: %v", err)
