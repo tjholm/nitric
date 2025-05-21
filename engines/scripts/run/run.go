@@ -5,37 +5,36 @@ import (
 	"encoding/json"
 	"log"
 
-	coreschema "github.com/nitrictech/nitric/cli/pkg/schema"
+	app_spec_schema "github.com/nitrictech/nitric/cli/pkg/schema"
 	"github.com/nitrictech/nitric/engines/terraform"
-	"github.com/nitrictech/nitric/engines/terraform/schema"
 )
 
 type MockTerraformPluginRepository struct {
-	plugins map[string]*schema.TerraformPluginManifest
+	plugins map[string]*terraform.PluginManifest
 }
 
-func (r *MockTerraformPluginRepository) GetPlugin(name string) (*schema.TerraformPluginManifest, error) {
+func (r *MockTerraformPluginRepository) GetPlugin(name string) (*terraform.PluginManifest, error) {
 	return r.plugins[name], nil
 }
 
 func createMockTerraformPluginRepository() *MockTerraformPluginRepository {
 	return &MockTerraformPluginRepository{
-		plugins: map[string]*schema.TerraformPluginManifest{
+		plugins: map[string]*terraform.PluginManifest{
 			"nitric-aws-lambda": {
 				Name: "nitric-aws-lambda",
-				Deployment: schema.TerraformDeploymentModule{
+				Deployment: terraform.DeploymentModule{
 					Terraform: "terraform-aws-modules/lambda/aws",
 				},
 			},
 			"nitric-aws-cloudfront": {
 				Name: "nitric-aws-cloudfront",
-				Deployment: schema.TerraformDeploymentModule{
+				Deployment: terraform.DeploymentModule{
 					Terraform: "terraform-aws-modules/cloudfront/aws",
 				},
 			},
 			"nitric-aws-vpc": {
 				Name: "nitric-aws-vpc",
-				Deployment: schema.TerraformDeploymentModule{
+				Deployment: terraform.DeploymentModule{
 					Terraform: "terraform-aws-modules/vpc/aws",
 				},
 			},
@@ -44,31 +43,33 @@ func createMockTerraformPluginRepository() *MockTerraformPluginRepository {
 }
 
 func main() {
-	platformConfig := schema.TerraformPlatform{
+	platformConfig := terraform.PlatformSpec{
 		Name: "aws",
-		Services: schema.TerraformPlatformResource{
-			BaseTerraformResource: schema.BaseTerraformResource{
-				Plugin: "nitric-aws-lambda",
+		ServicesSpec: terraform.NitricResourceSpec{
+			ResourceSpec: terraform.ResourceSpec{
+				PluginId: "nitric-aws-lambda",
 				Properties: map[string]interface{}{
 					"vpc_security_group_ids": "${infra.vpc.default_security_group_id}",
 					"vpc_subnet_ids":         "${infra.vpc.infra_subnets}",
-					"timeout":                "${stage.lambda_timeout}",
+					"timeout":                "${var.lambda_timeout}",
 				},
 			},
 		},
-		Entrypoints: schema.TerraformPlatformResource{
-			BaseTerraformResource: schema.BaseTerraformResource{
-				Plugin: "nitric-aws-cloudfront",
+		EntrypointsSpec: terraform.NitricResourceSpec{
+			ResourceSpec: terraform.ResourceSpec{
+				PluginId: "nitric-aws-cloudfront",
 				Properties: map[string]interface{}{
-					"region": "us-east-1",
+					"region": "${var.region}",
 				},
 			},
 		},
-		Infra: map[string]schema.BaseTerraformResource{
+		Infra: map[string]terraform.InfraResourceSpec{
 			"vpc": {
-				Plugin: "nitric-aws-vpc",
-				Properties: map[string]interface{}{
-					"region": "us-east-1",
+				ResourceSpec: terraform.ResourceSpec{
+					PluginId: "nitric-aws-vpc",
+					Properties: map[string]interface{}{
+						"region": "${var.region}",
+					},
 				},
 			},
 		},
@@ -85,26 +86,34 @@ func main() {
 	// provide a bytes reader to the terraform engine
 	platform := terraform.New(bytes.NewReader(platformConfigJSON), terraform.WithRepository(mockRepository))
 
-	err = platform.Apply(&coreschema.Application{
+	err = platform.Apply(&app_spec_schema.Application{
 		Name: "test",
-		Resources: map[string]coreschema.Resource{
+		Resources: map[string]app_spec_schema.Resource{
 			"service": {
 				Type: "service",
-				ServiceResource: &coreschema.ServiceResource{
+				ServiceResource: &app_spec_schema.ServiceResource{
 					Port: 8080,
 					Env: map[string]string{
 						"TEST": "test",
 					},
-					Container: coreschema.Container{
-						Image: &coreschema.DockerImage{
+					Container: app_spec_schema.Container{
+						Image: &app_spec_schema.DockerImage{
 							ID: "test",
 						},
 					},
 				},
 			},
+			"ingress": {
+				Type: "entrypoint",
+				EntrypointResource: &app_spec_schema.EntrypointResource{
+					Routes: map[string]app_spec_schema.Route{
+						"/": {
+							TargetName: "service",
+						},
+					},
+				},
+			},
 		},
-	}, map[string]interface{}{
-		"lambda_timeout": 30,
 	})
 
 	if err != nil {

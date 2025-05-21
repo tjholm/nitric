@@ -4,168 +4,154 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"regexp"
 	"strings"
 
 	"github.com/aws/jsii-runtime-go"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
-	coreschema "github.com/nitrictech/nitric/cli/pkg/schema"
+	app_spec_schema "github.com/nitrictech/nitric/cli/pkg/schema"
 	"github.com/nitrictech/nitric/engines"
-	"github.com/nitrictech/nitric/engines/terraform/schema"
 )
 
 type TerraformEngine struct {
-	platform   *schema.TerraformPlatform
-	repository TerraformPluginRepository
+	platform   *PlatformSpec
+	repository PluginRepository
 }
 
-func resolvePluginName(resource schema.TerraformPlatformResource, subtype string) (string, error) {
-	plugin := resource.Plugin
-	if subtype != "" {
-		if _, ok := resource.Subtypes[subtype]; !ok {
-			return "", fmt.Errorf("subtype %s not found", subtype)
+type TerraformDeployment struct {
+	app   cdktf.App
+	stack cdktf.TerraformStack
+
+	terraformResources      map[string]cdktf.TerraformHclModule
+	terraformInfraResources map[string]cdktf.TerraformHclModule
+	terraformVariables      map[string]cdktf.TerraformVariable
+}
+
+type SpecReference struct {
+	// var/infra/etc
+	Source string
+	// simple key for var or path for infra e.g. vpc.arn
+	Path []string
+}
+
+func SpecReferenceFromToken(token string) (*SpecReference, error) {
+	contents, ok := extractTokenContents(token)
+	if !ok {
+		return nil, fmt.Errorf("invalid token format")
+	}
+
+	parts := strings.Split(contents, ".")
+	if len(parts) < 2 {
+		return nil, fmt.Errorf("invalid token format")
+	}
+
+	return &SpecReference{
+		Source: parts[0],
+		Path:   parts[1:],
+	}, nil
+}
+
+func (tf *TerraformDeployment) resolveTokensForModule(resource ResourceSpec, module cdktf.TerraformHclModule) error {
+	for property, value := range resource.Properties {
+		module.Set(jsii.String(property), value)
+
+		token, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("invalid token format")
 		}
 
-		plugin = resource.Subtypes[subtype].Plugin
-	}
-
-	// resolve the plugins manifest and locate the deployment module
-	return plugin, nil
-}
-
-func (e *TerraformEngine) getPlatformResourceForType(resourceType string) (schema.TerraformPlatformResource, error) {
-	switch resourceType {
-	case "service":
-		return e.platform.Services, nil
-	case "entrypoint":
-		return e.platform.Entrypoints, nil
-	}
-	return schema.TerraformPlatformResource{}, fmt.Errorf("resource type %s not found", resourceType)
-}
-
-func (e *TerraformEngine) getPlatformResourceProperties() map[string]map[string]interface{} {
-	propertyMappings := map[string]map[string]interface{}{}
-
-	propertyMappings["service"] = e.platform.Services.Properties
-	for _, subtype := range e.platform.Services.Subtypes {
-		propertyMappings[fmt.Sprintf("service.%s", subtype)] = subtype.Properties
-	}
-
-	propertyMappings["entrypoint"] = e.platform.Entrypoints.Properties
-	for _, subtype := range e.platform.Entrypoints.Subtypes {
-		propertyMappings[fmt.Sprintf("entrypoint.%s", subtype)] = subtype.Properties
-	}
-
-	return propertyMappings
-}
-
-// extractTokenContents extracts the contents between ${} from a token string
-func extractTokenContents(token string) (string, bool) {
-	if matches := tokenPattern.FindStringSubmatch(token); len(matches) == 2 {
-		return matches[1], true
-	}
-	return "", false
-}
-
-var tokenPattern = regexp.MustCompile(`^\${([^}]+)}$`)
-
-// Apply the engine to the target environment
-func (e *TerraformEngine) Apply(application *coreschema.Application, stage map[string]interface{}) error {
-	app := cdktf.NewApp(&cdktf.AppConfig{})
-
-	stack := cdktf.NewTerraformStack(app, jsii.String(application.Name))
-	terraformResources := map[string]cdktf.TerraformHclModule{}
-	terraformInfraResources := map[string]cdktf.TerraformHclModule{}
-
-	// 1. Start deploying the platform
-	for resourceName, resource := range application.Resources {
-		terraformPlatformResource, err := e.getPlatformResourceForType(resource.Type)
+		specRef, err := SpecReferenceFromToken(token)
 		if err != nil {
-			return err
+			continue
 		}
 
-		pluginName, err := resolvePluginName(terraformPlatformResource, resource.SubType)
-		if err != nil {
-			return err
-		}
+		if specRef.Source == "infra" {
+			refName := specRef.Path[0]
+			propertyName := specRef.Path[1]
+			// map the variable output to the infra resource
+			refProperty := tf.terraformInfraResources[refName].Get(jsii.String(propertyName))
 
-		plugin, err := e.repository.GetPlugin(pluginName)
-		if err != nil {
-			return err
-		}
-
-		terraformResources[resourceName] = cdktf.NewTerraformHclModule(stack, jsii.String(resourceName), &cdktf.TerraformHclModuleConfig{
-			// This assumes that the plugin is resolvable as a URI
-			Source: jsii.String(plugin.Deployment.Terraform),
-		})
-	}
-
-	// 2. Deploy platform infra resources
-	for infraName, infra := range e.platform.Infra {
-		// Locate the plugin for the infra from platform
-		plugin, err := e.repository.GetPlugin(infra.Plugin)
-		if err != nil {
-			return err
-		}
-
-		terraformInfraResources[infraName] = cdktf.NewTerraformHclModule(stack, jsii.String(infraName), &cdktf.TerraformHclModuleConfig{
-			// This assumes that the plugin is resolvable as a URI
-			Source: jsii.String(plugin.Deployment.Terraform),
-		})
-	}
-
-	// 3. Map inputs and outputs from the platform and environment to the stack resources
-	resourceProperties := e.getPlatformResourceProperties()
-
-	fmt.Println("resourceProperties", resourceProperties)
-
-	for resourceName, resource := range application.Resources {
-		// get its plugin properties
-		pluginProperties := resourceProperties[resource.Type]
-		if resource.SubType != "" {
-			pluginProperties = resourceProperties[fmt.Sprintf("%s.%s", resource.Type, resource.SubType)]
-		}
-
-		// for each property in the plugin, map it to its respective value
-		for property, value := range pluginProperties {
-			fmt.Println("setting resource", resourceName, property, value)
-			// If the property represents a token that needs to be mapped then do so
-			if token, ok := value.(string); ok {
-				if contents, ok := extractTokenContents(token); ok {
-					// The contents can be processed by the caller by splitting on '.'
-					// For example: "infra.vpc.id" or "stage.variable_name"
-					parts := strings.Split(contents, ".")
-					source := parts[0]
-
-					if source == "infra" {
-						fmt.Println("setting infra resource", parts)
-
-						refName := parts[1]
-						propertyName := parts[2]
-						// map the variable output to the infra resource
-						refProperty := terraformInfraResources[refName].Get(jsii.String(propertyName))
-
-						terraformResources[resourceName].Set(jsii.String(property), refProperty)
-					} else if source == "stage" {
-						propertyName := parts[1]
-						terraformResources[resourceName].Set(jsii.String(property), stage[propertyName])
-					} else {
-						return fmt.Errorf("unknown variable mapping")
-						// Invalid variable mapping for now
-					}
-
-					_ = parts // TODO: Handle the token parts based on your needs
-				}
-
-				continue
+			module.Set(jsii.String(property), refProperty)
+		} else if specRef.Source == "var" {
+			// TODO: Remove dynamic variable creation, instead reference from spec (add a variables definition to the platform spec)
+			tfVariable, ok := tf.terraformVariables[specRef.Path[0]]
+			if !ok {
+				tf.terraformVariables[specRef.Path[0]] = cdktf.NewTerraformVariable(tf.stack, jsii.String(specRef.Path[0]), &cdktf.TerraformVariableConfig{})
+				tfVariable = tf.terraformVariables[specRef.Path[0]]
 			}
 
-			// otherwise, just set the value
-			terraformResources[resourceName].Set(jsii.String(property), value)
+			// Create a new terraform variable
+			module.Set(jsii.String(property), tfVariable.Value())
 		}
 	}
 
-	app.Synth()
+	return nil
+}
+
+func NewTerraformDeployment(stackName string) *TerraformDeployment {
+	app := cdktf.NewApp(&cdktf.AppConfig{})
+
+	return &TerraformDeployment{
+		app:                     app,
+		stack:                   cdktf.NewTerraformStack(app, jsii.String(stackName)),
+		terraformResources:      map[string]cdktf.TerraformHclModule{},
+		terraformInfraResources: map[string]cdktf.TerraformHclModule{},
+		terraformVariables:      map[string]cdktf.TerraformVariable{},
+	}
+}
+
+// Apply the engine to the target environment
+func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
+	tfDeployment := NewTerraformDeployment(appSpec.Name)
+
+	// Resolve resource modules
+	for resourceName, resource := range appSpec.Resources {
+		resourceSpec, err := e.platform.GetResourceSpecForTypes(resource.Type, resource.SubType)
+		if err != nil {
+			return err
+		}
+
+		plugin, err := e.repository.GetPlugin(resourceSpec.PluginId)
+		if err != nil {
+			return err
+		}
+
+		tfDeployment.terraformResources[resourceName] = cdktf.NewTerraformHclModule(tfDeployment.stack, jsii.String(resourceName), &cdktf.TerraformHclModuleConfig{
+			// TODO: This assumes that the plugin is resolvable as a URI
+			Source: jsii.String(plugin.Deployment.Terraform),
+		})
+	}
+
+	// Resolve infra modules
+	for infraName, infra := range e.platform.Infra {
+		plugin, err := e.repository.GetPlugin(infra.PluginId)
+		if err != nil {
+			return err
+		}
+
+		tfDeployment.terraformInfraResources[infraName] = cdktf.NewTerraformHclModule(tfDeployment.stack, jsii.String(infraName), &cdktf.TerraformHclModuleConfig{
+			// TODO: This assumes that the plugin is resolvable as a URI
+			Source: jsii.String(plugin.Deployment.Terraform),
+		})
+	}
+
+	// Resolve resource tokens
+	for _, resource := range appSpec.Resources {
+		resourceSpec, err := e.platform.GetResourceSpecForTypes(resource.Type, resource.SubType)
+		if err != nil {
+			return err
+		}
+
+		for _, module := range tfDeployment.terraformResources {
+			tfDeployment.resolveTokensForModule(resourceSpec, module)
+		}
+	}
+
+	// Resolve infra tokens
+	for infraName, infra := range e.platform.Infra {
+		tfDeployment.resolveTokensForModule(infra.ResourceSpec, tfDeployment.terraformInfraResources[infraName])
+	}
+
+	tfDeployment.app.Synth()
 
 	return nil
 }
@@ -174,14 +160,14 @@ var _ engines.Engine = &TerraformEngine{}
 
 type terraformEngineOption func(*TerraformEngine)
 
-func WithRepository(repository TerraformPluginRepository) terraformEngineOption {
+func WithRepository(repository PluginRepository) terraformEngineOption {
 	return func(engine *TerraformEngine) {
 		engine.repository = repository
 	}
 }
 
 func New(platformFile io.Reader, opts ...terraformEngineOption) *TerraformEngine {
-	platform := &schema.TerraformPlatform{}
+	platform := &PlatformSpec{}
 
 	json.NewDecoder(platformFile).Decode(platform)
 
