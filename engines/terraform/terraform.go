@@ -166,13 +166,17 @@ func WithRepository(repository PluginRepository) terraformEngineOption {
 	}
 }
 
-func New(platformFile io.Reader, opts ...terraformEngineOption) *TerraformEngine {
+func NewFromFile(platformFile io.Reader, opts ...terraformEngineOption) *TerraformEngine {
 	platform := &PlatformSpec{}
 
 	json.NewDecoder(platformFile).Decode(platform)
 
+	return New(platform, opts...)
+}
+
+func New(platformSpec *PlatformSpec, opts ...terraformEngineOption) *TerraformEngine {
 	engine := &TerraformEngine{
-		platform: platform,
+		platform: platformSpec,
 	}
 
 	for _, opt := range opts {

@@ -84,7 +84,7 @@ func main() {
 	mockRepository := createMockTerraformPluginRepository()
 
 	// provide a bytes reader to the terraform engine
-	platform := terraform.New(bytes.NewReader(platformConfigJSON), terraform.WithRepository(mockRepository))
+	platform := terraform.NewFromFile(bytes.NewReader(platformConfigJSON), terraform.WithRepository(mockRepository))
 
 	err = platform.Apply(&app_spec_schema.Application{
 		Name: "test",
