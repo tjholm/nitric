@@ -9,14 +9,14 @@ import (
 )
 
 //go:embed plugins/**/manifest.yaml
-var serviceManifests embed.FS
+var manifestFs embed.FS
 
 var manifests = map[string]*PluginManifest{}
 
 // Read all manifests and build a map of name -> manifest
 func init() {
 	// Walk filesystem and read each manifest.yaml file
-	fs.WalkDir(serviceManifests, ".", func(path string, d fs.DirEntry, err error) error {
+	fs.WalkDir(manifestFs, ".", func(path string, d fs.DirEntry, err error) error {
 		fmt.Println(path)
 
 		if err != nil {
@@ -27,7 +27,7 @@ func init() {
 			return nil
 		}
 
-		manifestBytes, err := fs.ReadFile(serviceManifests, path)
+		manifestBytes, err := fs.ReadFile(manifestFs, path)
 		if err != nil {
 			return err
 		}

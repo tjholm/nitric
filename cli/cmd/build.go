@@ -114,11 +114,11 @@ var buildCmd = &cobra.Command{
 		}
 
 		// TODO: 912 repository
-		mockRepository := createMockTerraformPluginRepository()
+		embeddedRepository := terraform.NewNitricTerraformPluginRepository()
 
 		mockPlatformRepository := terraform.NewMockPlatformRepository()
 
-		platform := terraform.New(mockPlatformRepository.GetPlatform(appSpec.Platform), terraform.WithRepository(mockRepository))
+		platform := terraform.New(mockPlatformRepository.GetPlatform(appSpec.Platform), terraform.WithRepository(embeddedRepository))
 		// Parse the application spec
 		// Validate the application spec
 		// Build the application using the specified platform
