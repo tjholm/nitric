@@ -81,7 +81,7 @@ func main() {
 		log.Fatalf("failed to marshal platform config: %v", err)
 	}
 
-	mockRepository := createMockTerraformPluginRepository()
+	mockRepository := terraform.NewNitricTerraformPluginRepository()
 
 	// provide a bytes reader to the terraform engine
 	platform := terraform.NewFromFile(bytes.NewReader(platformConfigJSON), terraform.WithRepository(mockRepository))
