@@ -135,15 +135,13 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 	}
 
 	// Resolve resource tokens
-	for _, resource := range appSpec.Resources {
+	for resourceName, resource := range appSpec.Resources {
 		resourceSpec, err := e.platform.GetResourceSpecForTypes(resource.Type, resource.SubType)
 		if err != nil {
 			return err
 		}
 
-		for _, module := range tfDeployment.terraformResources {
-			tfDeployment.resolveTokensForModule(resourceSpec, module)
-		}
+		tfDeployment.resolveTokensForModule(resourceSpec, tfDeployment.terraformResources[resourceName])
 	}
 
 	// Resolve infra tokens
