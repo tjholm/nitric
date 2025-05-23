@@ -1,4 +1,4 @@
-package server
+package runtime
 
 import (
 	storagepb "github.com/nitrictech/nitric/core/pkg/proto/storage/v1"

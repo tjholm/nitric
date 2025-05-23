@@ -1,4 +1,4 @@
-package server
+package runtime
 
 import (
 	"log"
@@ -6,14 +6,13 @@ import (
 
 	storagepb "github.com/nitrictech/nitric/core/pkg/proto/storage/v1"
 	pubsubpb "github.com/nitrictech/nitric/core/pkg/proto/topics/v1"
-	"github.com/nitrictech/nitric/server/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-type RegisterFunction[T any] func(name string, constructor runtime.PluginConstructor[T])
+type RegisterFunction[T any] func(name string, constructor PluginConstructor[T])
 
-func RegisterPlugins[T any](register RegisterFunction[T], plugins map[string]runtime.PluginConstructor[T]) {
+func RegisterPlugins[T any](register RegisterFunction[T], plugins map[string]PluginConstructor[T]) {
 	// Register the plugins
 	for name, constructor := range plugins {
 		register(name, constructor)
