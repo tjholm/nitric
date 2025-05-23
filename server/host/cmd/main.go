@@ -9,26 +9,18 @@ import (
 	"github.com/nitrictech/nitric/server/runtime/pubsub"
 	"github.com/nitrictech/nitric/server/runtime"
     "github.com/nitrictech/plugins-poc/host/server"
-	{{- range .Storage }}
-	{{ .Alias }} "{{ .Import }}"
-	{{- end }}
-	{{- range .PubSub }}
-	{{ .Alias }} "{{ .Import }}"
-	{{- end }}
+	s3 "github.com/nitrictech/plugins-poc/plugins/storage/s3"
+	sns "github.com/nitrictech/plugins-poc/plugins/pubsub/sns"
 )
 
 // storagePluginRegistry maps plugin names to their storage plugin constructors
 var storagePluginRegistry = map[string]plugins.Constructor[storage.Storage]{
-	{{- range .Storage }}
-	"{{ .Name }}": {{ .Alias }}.Plugin,
-	{{- end }}
+	"default": s3.Plugin,
 }
 
 // pubsubPluginRegistry maps plugin names to their pubsub plugin constructors
 var pubsubPluginRegistry = map[string]plugins.Constructor[pubsub.Pubsub]{
-	{{- range .PubSub }}
-	"{{ .Name }}": {{ .Alias }}.Plugin,
-	{{- end }}
+	"default": sns.Plugin,
 }
 
 func main() {
