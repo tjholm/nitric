@@ -49,27 +49,21 @@ func main() {
 			ResourceSpec: terraform.ResourceSpec{
 				PluginId: "nitric-aws-lambda",
 				Properties: map[string]interface{}{
-					"vpc_security_group_ids": "${infra.vpc.default_security_group_id}",
-					"vpc_subnet_ids":         "${infra.vpc.infra_subnets}",
-					"timeout":                "${var.lambda_timeout}",
+					"timeout": "${var.lambda_timeout}",
 				},
 			},
 		},
 		EntrypointsSpec: terraform.NitricResourceSpec{
 			ResourceSpec: terraform.ResourceSpec{
-				PluginId: "nitric-aws-cloudfront",
-				Properties: map[string]interface{}{
-					"region": "${var.region}",
-				},
+				PluginId:   "nitric-aws-cloudfront",
+				Properties: map[string]interface{}{},
 			},
 		},
 		Infra: map[string]terraform.InfraResourceSpec{
 			"vpc": {
 				ResourceSpec: terraform.ResourceSpec{
-					PluginId: "nitric-aws-vpc",
-					Properties: map[string]interface{}{
-						"region": "${var.region}",
-					},
+					PluginId:   "nitric-aws-vpc",
+					Properties: map[string]interface{}{},
 				},
 			},
 		},
@@ -98,7 +92,7 @@ func main() {
 					},
 					Container: app_spec_schema.Container{
 						Image: &app_spec_schema.DockerImage{
-							ID: "test",
+							ID: "nginx:latest",
 						},
 					},
 				},

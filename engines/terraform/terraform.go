@@ -103,6 +103,12 @@ func NewTerraformDeployment(stackName string) *TerraformDeployment {
 func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 	tfDeployment := NewTerraformDeployment(appSpec.Name)
 
+	// Create a terraform variable to establish the root context for application builds
+	// this will be prepended to the path of any internal docker builds
+	// tfDeployment.terraformVariables["build_root"] = cdktf.NewTerraformVariable(tfDeployment.stack, jsii.String("build_root"), &cdktf.TerraformVariableConfig{
+	// 	Type: jsii.String("string"),
+	// })
+
 	// Resolve resource modules
 	for resourceName, resource := range appSpec.Resources {
 		resourceSpec, err := e.platform.GetResourceSpecForTypes(resource.Type, resource.SubType)
@@ -115,9 +121,42 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 			return err
 		}
 
+		// Map the nitric variable
+		var nitricVar interface{} = nil
+		if resource.Type == "service" {
+			var imageVars *map[string]interface{} = nil
+			if resource.ServiceResource.Container.Image != nil {
+				imageVars = &map[string]interface{}{
+					"image_id": jsii.String(resource.ServiceResource.Container.Image.ID),
+					"tag":      jsii.String(resourceName),
+				}
+			} else if resource.ServiceResource.Container.Docker != nil {
+				imageVars = &map[string]interface{}{
+					"build_context": jsii.String(resource.ServiceResource.Container.Docker.Context),
+					"dockerfile":    jsii.String(resource.ServiceResource.Container.Docker.Dockerfile),
+					"tag":           jsii.String(resourceName),
+				}
+			}
+
+			imageModule := cdktf.NewTerraformHclModule(tfDeployment.stack, jsii.Sprintf("%s_image", resourceName), &cdktf.TerraformHclModuleConfig{
+				Source:    jsii.String("github.com/tjholm/nitric//engines/terraform/modules/image?depth=1&ref=feat/sdk-contracts"),
+				Variables: imageVars,
+			})
+
+			nitricVar = &NitricServiceVariables{
+				NitricVariables: NitricVariables{
+					Name: jsii.String(resourceName),
+				},
+				ImageId: imageModule.GetString(jsii.String("image_id")),
+			}
+		}
+
 		tfDeployment.terraformResources[resourceName] = cdktf.NewTerraformHclModule(tfDeployment.stack, jsii.String(resourceName), &cdktf.TerraformHclModuleConfig{
 			// TODO: This assumes that the plugin is resolvable as a URI
 			Source: jsii.String(plugin.Deployment.Terraform),
+			Variables: &map[string]interface{}{
+				"nitric": nitricVar,
+			},
 		})
 	}
 

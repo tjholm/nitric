@@ -16,6 +16,12 @@ type goPlugin struct {
 	Import string `json:"Import"`
 }
 
+type pluginDefintion struct {
+	Pubsub  []goPlugin `json:"Pubsub"`
+	Storage []goPlugin `json:"Storage"`
+	Service goPlugin   `json:"Service"`
+}
+
 func main() {
 	// template our main.go by injecting the plugin name and known plugin constructor
 	tmpl, err := template.New("main").Parse(mainTmpl)
@@ -25,31 +31,14 @@ func main() {
 
 	// NOTE: The plugin definitions will come from an externally provided config file
 	// This is hardcoded here as a demonstration
-	err = tmpl.Execute(os.Stdout, map[string][]goPlugin{
-		"Storage": {
-			{
-				Alias:  "s3",
-				Name:   "default",
-				Import: "github.com/nitrictech/plugins-poc/plugins/storage/s3",
-			},
-			// {
-			// 	Alias:  "gcloud",
-			// 	Name:   "default",
-			// 	Import: "github.com/nitrictech/plugins-poc/plugins/storage/gcloud",
-			// },
+	err = tmpl.Execute(os.Stdout, pluginDefintion{
+		Service: goPlugin{
+			Alias:  "awslambda",
+			Name:   "default",
+			Import: "github.com/nitrictech/nitric/engines/terraform/plugins/awslambda",
 		},
-		"PubSub": {
-			{
-				Alias:  "sns",
-				Name:   "default",
-				Import: "github.com/nitrictech/plugins-poc/plugins/pubsub/sns",
-			},
-			// {
-			// 	Alias:  "gcloudpubsub",
-			// 	Name:   "default",
-			// 	Import: "github.com/nitrictech/plugins-poc/plugins/pubsub/gcloudpubsub",
-			// },
-		},
+		Pubsub:  []goPlugin{},
+		Storage: []goPlugin{},
 	})
 	if err != nil {
 		log.Fatalf("error executing template: %v", err)
