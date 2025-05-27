@@ -25,6 +25,11 @@ variable "environment" {
     default = {}
 }
 
+variable "function_url_auth_type" {
+    type = string
+    default = "AWS_IAM"
+}
+
 variable "subnet_ids" {
     type = list(string)
     default = []

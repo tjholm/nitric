@@ -86,13 +86,14 @@ func main() {
 			"service": {
 				Type: "service",
 				ServiceResource: &app_spec_schema.ServiceResource{
-					Port: 8080,
+					Port: 80,
 					Env: map[string]string{
 						"TEST": "test",
+						"PORT": "80",
 					},
 					Container: app_spec_schema.Container{
 						Image: &app_spec_schema.DockerImage{
-							ID: "nginx:latest",
+							ID: "ealen/echo-server:latest",
 						},
 					},
 				},

@@ -80,7 +80,7 @@ resource "aws_lambda_function" "function" {
 resource "aws_lambda_function_url" "endpoint" {
   function_name      = aws_lambda_function.function.function_name
   # qualifier          = "my_alias"
-  authorization_type = "AWS_IAM"
+  authorization_type = var.function_url_auth_type
 
   # cors {
   #   allow_credentials = true
