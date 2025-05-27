@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	pubsubpb "github.com/nitrictech/nitric/proto/pubsub/v2"
 	storagepb "github.com/nitrictech/nitric/proto/storage/v2"
@@ -21,6 +22,20 @@ func RegisterPlugins[T any](register plugin.Register[T], plugins map[string]plug
 	for name, constructor := range plugins {
 		register(name, constructor)
 	}
+}
+
+// waitForPort attempts to connect to the given port until it succeeds or times out
+func waitForPort(host string, port string, timeout time.Duration) error {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", host, port), time.Second)
+		if err == nil {
+			conn.Close()
+			return nil
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return fmt.Errorf("timeout waiting for port %s to be available", port)
 }
 
 func Start(cmd string) {
@@ -47,9 +62,11 @@ func Start(cmd string) {
 
 	// Get the PORT of the local service
 	servicePort := os.Getenv("PORT")
+	if servicePort == "" {
+		log.Fatal("PORT environment variable not set")
+	}
 
 	// Start the actual nitric service
-	// TODO: Determine how we will provide this command
 	cmdParts := strings.Split(cmd, " ")
 	runCmd := exec.Command(cmdParts[0], cmdParts[1:]...)
 	runCmd.Env = os.Environ()
@@ -59,6 +76,13 @@ func Start(cmd string) {
 	if err := runCmd.Start(); err != nil {
 		log.Fatalf("failed to start service: %v", err)
 	}
+
+	// Wait for the service to be ready (up to 30 seconds)
+	log.Printf("Waiting for service to be ready on port %s...", servicePort)
+	if err := waitForPort("localhost", servicePort, 10*time.Second); err != nil {
+		log.Fatalf("service failed to start: %v", err)
+	}
+	log.Printf("Service is ready on port %s", servicePort)
 
 	// Start the service gateway and proxy
 	err = service.Start(service.NewHttpServerProxy(fmt.Sprintf("localhost:%s", servicePort)))
