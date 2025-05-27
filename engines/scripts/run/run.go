@@ -49,7 +49,8 @@ func main() {
 			ResourceSpec: terraform.ResourceSpec{
 				PluginId: "nitric-aws-lambda",
 				Properties: map[string]interface{}{
-					"timeout": "${var.lambda_timeout}",
+					"timeout":                "${var.lambda_timeout}",
+					"function_url_auth_type": "${var.function_url_auth_type}",
 				},
 			},
 		},
@@ -86,14 +87,14 @@ func main() {
 			"service": {
 				Type: "service",
 				ServiceResource: &app_spec_schema.ServiceResource{
-					Port: 80,
+					Port: 8080,
 					Env: map[string]string{
 						"TEST": "test",
-						"PORT": "80",
+						"PORT": "8080",
 					},
 					Container: app_spec_schema.Container{
 						Image: &app_spec_schema.DockerImage{
-							ID: "ealen/echo-server:latest",
+							ID: "mendhak/http-https-echo:37",
 						},
 					},
 				},

@@ -62,7 +62,7 @@ resource "aws_lambda_function" "function" {
     size = var.ephemeral_storage
   }
   environment {
-    variables = var.environment
+    variables = merge(var.environment, var.nitric.env)
   }
 
 

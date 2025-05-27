@@ -148,6 +148,7 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 					Name: jsii.String(resourceName),
 				},
 				ImageId: imageModule.GetString(jsii.String("image_id")),
+				Env:     &resource.Env,
 			}
 		}
 

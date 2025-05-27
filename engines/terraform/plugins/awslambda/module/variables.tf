@@ -2,6 +2,7 @@ variable "nitric" {
     type = object({
         name = string
         image_id = string
+        env = map(string)
     })
 }
 
