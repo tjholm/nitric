@@ -87,14 +87,14 @@ func main() {
 			"service": {
 				Type: "service",
 				ServiceResource: &app_spec_schema.ServiceResource{
-					Port: 8080,
+					Port: 3000,
 					Env: map[string]string{
 						"TEST": "test",
-						"PORT": "8080",
+						"PORT": "3000",
 					},
 					Container: app_spec_schema.Container{
 						Image: &app_spec_schema.DockerImage{
-							ID: "mendhak/http-https-echo:37",
+							ID: "ealen/echo-server:latest",
 						},
 					},
 				},
