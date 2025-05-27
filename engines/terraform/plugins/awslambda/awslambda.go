@@ -48,6 +48,10 @@ func (a *awslambdaService) handleHTTPEvent(ctx context.Context, evt *events.APIG
 		req.Header.Add(k, v)
 	}
 
+	for k, v := range evt.QueryStringParameters {
+		req.URL.Query().Add(k, v)
+	}
+
 	resp, err := a.proxy.Forward(ctx, req)
 	if err != nil {
 		return nil, err
