@@ -17,6 +17,7 @@ func (MockPlatformRepository) GetPlatform(name string) *PlatformSpec {
 				Properties: map[string]interface{}{
 					"timeout":                "${var.lambda_timeout}",
 					"function_url_auth_type": "${var.function_url_auth_type}",
+					"db_url":                 "${infra.supabase-db.db_url}",
 				},
 			},
 		},
@@ -27,6 +28,12 @@ func (MockPlatformRepository) GetPlatform(name string) *PlatformSpec {
 			},
 		},
 		Infra: map[string]InfraResourceSpec{
+			"supabase-db": {
+				ResourceSpec: ResourceSpec{
+					PluginId:   "nitric-supabase-db",
+					Properties: map[string]interface{}{},
+				},
+			},
 			"vpc": {
 				ResourceSpec: ResourceSpec{
 					PluginId:   "nitric-aws-vpc",
