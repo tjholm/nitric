@@ -15,7 +15,7 @@ resource "supabase_project" "project" {
 }
 # Configure api settings for the linked project
 resource "supabase_settings" "production" {
-  project_ref = supabase_project.project.ref
+  project_ref = supabase_project.project.id
   api = jsonencode({
     db_schema            = "public,storage,graphql_public"
     db_extra_search_path = "public,extensions"
