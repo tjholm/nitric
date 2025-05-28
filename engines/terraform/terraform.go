@@ -100,6 +100,17 @@ func NewTerraformDeployment(stackName string) *TerraformDeployment {
 	}
 }
 
+func (e *TerraformEngine) resolvePluginsForService(servicePlugin *PluginManifest) (*plugin.PluginDefintion, error) {
+	// TODO: Map platform resource plugins to the service plugin
+	return &plugin.PluginDefintion{
+		Service: plugin.GoPlugin{
+			Alias:  "svcPlugin",
+			Name:   "default",
+			Import: servicePlugin.Runtime.GoModule,
+		},
+	}, nil
+}
+
 // Apply the engine to the target environment
 func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 	tfDeployment := NewTerraformDeployment(appSpec.Name)
@@ -129,14 +140,9 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 
 			fmt.Printf("%+v\n", plug)
 
-			// Create the server plugin manifest
-			pluginManifest := plugin.PluginDefintion{
-				Service: plugin.GoPlugin{
-					Alias:  "svcPlugin",
-					Name:   "default",
-					Import: plug.Runtime.GoModule,
-				},
-				// TODO: Need to inject all other plugins
+			pluginManifest, err := e.resolvePluginsForService(plug)
+			if err != nil {
+				return err
 			}
 
 			pluginManifestBytes, err := json.Marshal(pluginManifest)
