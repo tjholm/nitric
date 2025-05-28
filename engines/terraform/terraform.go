@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 	app_spec_schema "github.com/nitrictech/nitric/cli/pkg/schema"
 	"github.com/nitrictech/nitric/engines"
+	"github.com/nitrictech/nitric/server/plugin"
 )
 
 type TerraformEngine struct {
@@ -116,7 +117,7 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 			return err
 		}
 
-		plugin, err := e.repository.GetPlugin(resourceSpec.PluginId)
+		plug, err := e.repository.GetPlugin(resourceSpec.PluginId)
 		if err != nil {
 			return err
 		}
@@ -125,16 +126,36 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 		var nitricVar interface{} = nil
 		if resource.Type == "service" {
 			var imageVars *map[string]interface{} = nil
+
+			fmt.Printf("%+v\n", plug)
+
+			// Create the server plugin manifest
+			pluginManifest := plugin.PluginDefintion{
+				Service: plugin.GoPlugin{
+					Alias:  "svcPlugin",
+					Name:   "default",
+					Import: plug.Runtime.GoModule,
+				},
+				// TODO: Need to inject all other plugins
+			}
+
+			pluginManifestBytes, err := json.Marshal(pluginManifest)
+			if err != nil {
+				return err
+			}
+
 			if resource.ServiceResource.Container.Image != nil {
 				imageVars = &map[string]interface{}{
 					"image_id": jsii.String(resource.ServiceResource.Container.Image.ID),
 					"tag":      jsii.String(resourceName),
+					"args":     map[string]interface{}{"PLUGIN_DEFINITION": jsii.String(string(pluginManifestBytes))},
 				}
 			} else if resource.ServiceResource.Container.Docker != nil {
 				imageVars = &map[string]interface{}{
 					"build_context": jsii.String(resource.ServiceResource.Container.Docker.Context),
 					"dockerfile":    jsii.String(resource.ServiceResource.Container.Docker.Dockerfile),
 					"tag":           jsii.String(resourceName),
+					"args":          map[string]interface{}{"PLUGIN_DEFINITION": jsii.String(string(pluginManifestBytes))},
 				}
 			}
 
@@ -154,7 +175,7 @@ func (e *TerraformEngine) Apply(appSpec *app_spec_schema.Application) error {
 
 		tfDeployment.terraformResources[resourceName] = cdktf.NewTerraformHclModule(tfDeployment.stack, jsii.String(resourceName), &cdktf.TerraformHclModuleConfig{
 			// TODO: This assumes that the plugin is resolvable as a URI
-			Source: jsii.String(plugin.Deployment.Terraform),
+			Source: jsii.String(plug.Deployment.Terraform),
 			Variables: &map[string]interface{}{
 				"nitric": nitricVar,
 			},

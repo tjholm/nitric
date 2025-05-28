@@ -3,6 +3,9 @@ ARG BASE_IMAGE
 # TODO: Need to make sure the architecture for the build matches the base image
 FROM golang as base
 
+ARG PLUGIN_DEFINITION
+ENV PLUGIN_DEFINITION=${PLUGIN_DEFINITION}
+
 # Need to install make
 RUN apt-get update && apt-get install -y make
 

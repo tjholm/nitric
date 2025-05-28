@@ -23,3 +23,8 @@ variable "build_context" {
   nullable = true
 }
 
+variable "args" {
+  type = map(string)
+  description = "The arguments to pass to the build"
+  default = {}
+}

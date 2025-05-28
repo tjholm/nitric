@@ -30,10 +30,10 @@ resource "docker_image" "service" {
     context = "."
     # Use the wrapped dockerfile here
     dockerfile = "${path.module}/wrapped.dockerfile"
-    build_args = {
+    build_args = merge({
       BASE_IMAGE = local.image_id
       ORIGINAL_COMMAND = local.original_command
-    }
+    }, var.args)
     tag     = ["${var.tag}:latest"]
   }
 }
