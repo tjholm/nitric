@@ -81,6 +81,10 @@ func (s *s3Storage) Write(ctx context.Context, req *storagepb.StorageWriteReques
 	bucketName := s.getS3BucketName(req.BucketName)
 	contentType := detectContentType(req.Key, req.Body)
 
+	fmt.Println("bucketName", bucketName)
+	fmt.Println("contentType", contentType)
+	fmt.Println("req.Key", req.Key)
+
 	if _, err := s.s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(bucketName),
 		Body:        bytes.NewReader(req.Body),
