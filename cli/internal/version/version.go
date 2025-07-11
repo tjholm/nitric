@@ -2,10 +2,14 @@ package version
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
 var (
+	// Set the name of the CLI to how it was executed so it is consistent with its use
+	// This is in case users are making use of symlinks of renames of the binary
+	Name = os.Args[0]
 	// Raw is the string representation of the version. This will be replaced
 	// with the calculated version at build time.
 	// set in the Makefile.
